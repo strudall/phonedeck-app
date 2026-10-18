@@ -1,0 +1,773 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PhoneDeck</title>
+<meta name="description" content="Transforma o telemóvel numa consola de botões para o computador: música, volume, microfone, apps e atalhos. Grátis para macOS, Windows e Linux.">
+<meta property="og:title" content="PhoneDeck">
+<meta property="og:description" content="O teu computador, num toque. Música, volume, microfone, apps e atalhos a partir do telemóvel.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#08081a">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+  /* Página de produto em vidro escuro, com a identidade da app (tema Aurora).
+     Layout: hero dividido (texto | telemóvel interativo) → grelha de funcionalidades em
+     "teclas" de vidro → passos → editor → sistemas → privacidade → perguntas → downloads. */
+  :root {
+    color-scheme: dark;
+    --base: #08081a;       /* fundo */
+    --ink: #f3f4fb;        /* texto */
+    --muted: #a9adc6;      /* texto secundário */
+    --line: rgba(255,255,255,.12);
+    --glass: rgba(255,255,255,.06);
+    --glass-2: rgba(255,255,255,.1);
+    --violet: #a78bfa;     /* destaque (Aurora) */
+    --blue: #3b82f6;
+    --rose: #db2777;
+    --green: #4ade80;
+    --red: #ef4444;
+    --display: "Unbounded", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+    --body: "Instrument Sans", -apple-system, "Segoe UI", system-ui, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    --wrap: 1160px;
+    --gutter-l: max(20px, env(safe-area-inset-left, 0px));
+    --gutter-r: max(20px, env(safe-area-inset-right, 0px));
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; background: var(--base); }
+  body {
+    margin: 0; color: var(--ink); font: 16.5px/1.6 var(--body); -webkit-font-smoothing: antialiased;
+    background:
+      radial-gradient(60rem 38rem at 85% -6rem, color-mix(in srgb, var(--violet) 26%, transparent), transparent 70%),
+      radial-gradient(48rem 34rem at -10% 18rem, color-mix(in srgb, var(--blue) 22%, transparent), transparent 70%),
+      radial-gradient(50rem 40rem at 50% 120%, color-mix(in srgb, var(--rose) 16%, transparent), transparent 70%),
+      var(--base);
+    background-attachment: fixed;
+    overflow-x: hidden;
+  }
+  a { color: inherit; }
+  :focus-visible { outline: 2px solid var(--violet); outline-offset: 3px; border-radius: 6px; }
+  .wrap { max-width: var(--wrap); margin: 0 auto; padding-left: var(--gutter-l); padding-right: var(--gutter-r); }
+  h1, h2, h3 { text-wrap: balance; margin: 0; }
+  h2 { font: 700 clamp(28px, 4.2vw, 46px)/1.08 var(--display); letter-spacing: -.02em; }
+  h3 { font: 600 19px/1.3 var(--body); letter-spacing: -.01em; }
+  p { margin: 0; }
+  .lede { color: var(--muted); font-size: 18px; max-width: 60ch; }
+  .eyebrow { font: 700 12px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--violet); }
+  section { padding-block: clamp(64px, 9vw, 120px); scroll-margin-top: 72px; }
+  .section-head { display: grid; gap: 14px; margin-bottom: clamp(32px, 4vw, 52px); max-width: 760px; }
+  .glass { background: var(--glass); border: 1px solid var(--line); -webkit-backdrop-filter: blur(22px) saturate(150%); backdrop-filter: blur(22px) saturate(150%);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.08); }
+  kbd { font: 700 13px/1 var(--mono); display: inline-grid; place-items: center; min-width: 2em; height: 2em; padding: 0 .5em; border-radius: 8px;
+    background: linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,.05)); border: 1px solid rgba(255,255,255,.2);
+    border-bottom-width: 3px; color: var(--ink); }
+
+  /* ---------- Navegação ---------- */
+  .nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; padding-block: 12px; }
+  .nav-in { display: flex; align-items: center; gap: 18px; padding: 10px 10px 10px 16px; border-radius: 18px; }
+  .brand { display: flex; align-items: center; gap: 10px; font: 700 16px var(--display); letter-spacing: -.01em; text-decoration: none; }
+  .brand img { width: 30px; height: 30px; border-radius: 8px; }
+  .nav-links { display: flex; gap: 4px; margin-left: auto; }
+  .nav-links a { text-decoration: none; color: var(--muted); font-weight: 600; font-size: 14.5px; padding: 8px 12px; border-radius: 10px; }
+  .nav-links a:hover { color: var(--ink); background: var(--glass); }
+  .btn { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 700; border-radius: 14px; padding: 12px 18px;
+    border: 1px solid var(--line); background: var(--glass-2); transition: transform .15s, background .2s, box-shadow .2s; cursor: pointer; font-size: 15px; color: var(--ink); }
+  .btn:hover { background: rgba(255,255,255,.16); }
+  .btn:active { transform: scale(.97); }
+  .btn.primary { background: var(--violet); color: #120a2a; border-color: transparent; box-shadow: 0 12px 34px -12px var(--violet); }
+  .btn.primary:hover { filter: brightness(1.07); background: var(--violet); }
+  .btn.sm { padding: 9px 14px; font-size: 14px; border-radius: 12px; }
+  .btn svg { width: 18px; height: 18px; flex: none; }
+
+  /* ---------- Hero ---------- */
+  .hero { padding-block: clamp(28px, 5vw, 64px) clamp(56px, 8vw, 100px); }
+  .hero-grid { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(0, .92fr); gap: clamp(32px, 6vw, 80px); align-items: center; }
+  .chip { display: inline-flex; align-items: center; gap: 8px; padding: 7px 12px 7px 9px; border-radius: 999px; font: 600 13px var(--body); color: var(--muted); }
+  .chip b { font: 700 11px var(--mono); color: #120a2a; background: var(--violet); padding: 4px 7px; border-radius: 999px; letter-spacing: .04em; }
+  .hero h1 { font: 700 clamp(40px, 6.6vw, 82px)/1 var(--display); letter-spacing: -.035em; margin-top: 22px; }
+  .hero h1 em { font-style: normal; background: linear-gradient(100deg, #c4b5fd, #f0abfc 55%, #93c5fd); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .hero .lede { margin-top: 22px; font-size: clamp(17px, 1.6vw, 19.5px); }
+  .cta-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-top: 32px; }
+  .cta-meta { width: 100%; color: var(--muted); font: 500 13px var(--mono); }
+  .facts { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 34px; padding-top: 22px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14.5px; }
+  .facts span { display: inline-flex; align-items: center; gap: 8px; }
+  .facts i { width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 10px var(--green); }
+
+  /* ---------- Telemóvel (ilustração interativa) ---------- */
+  .stage { position: relative; display: grid; justify-items: center; gap: 14px; }
+  .phone { --c: #334155; width: min(330px, 100%); aspect-ratio: 9 / 19; border-radius: 48px; padding: 14px 13px 12px; position: relative;
+    display: flex; flex-direction: column; overflow: hidden;
+    background:
+      radial-gradient(70% 45% at 10% 6%, rgba(124,58,237,.55), transparent 70%),
+      radial-gradient(60% 40% at 100% 40%, rgba(37,99,235,.45), transparent 70%),
+      radial-gradient(80% 50% at 35% 105%, rgba(219,39,119,.4), transparent 70%), #0a0a1f;
+    box-shadow: 0 0 0 9px #101221, 0 0 0 10px rgba(255,255,255,.14), 0 50px 90px -30px rgba(0,0,0,.85), 0 0 120px -30px rgba(167,139,250,.55); }
+  .ph-status { display: flex; justify-content: space-between; align-items: center; padding: 0 14px 8px; font: 600 11px var(--body); color: rgba(255,255,255,.8); }
+  .ph-status i { width: 86px; height: 22px; border-radius: 12px; background: #000; }
+  .ph-head { display: flex; justify-content: space-between; align-items: flex-start; padding: 2px 4px 10px; }
+  .ph-head b { display: block; font: 700 19px var(--body); letter-spacing: -.02em; }
+  .ph-head small { color: var(--muted); font-size: 11px; font-weight: 600; }
+  .ph-vol { display: flex; align-items: center; gap: 6px; padding: 5px 9px; border-radius: 999px; font: 600 10.5px var(--mono); color: var(--muted); }
+  .ph-vol span { width: 34px; height: 4px; border-radius: 2px; background: rgba(255,255,255,.16); overflow: hidden; }
+  .ph-vol span i { display: block; height: 100%; width: 50%; background: var(--ink); transition: width .25s; }
+  .ph-vol.muted span i { background: #f87171; }
+  .ph-now { border-radius: 18px; padding: 10px 12px 8px; margin-bottom: 10px; }
+  .ph-now b { display: block; font-size: 12.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ph-now small { color: var(--muted); font-size: 10.5px; }
+  .ph-bar { display: flex; align-items: center; gap: 8px; margin-top: 6px; font: 500 9.5px var(--mono); color: var(--muted); }
+  .ph-bar span { flex: 1; height: 4px; border-radius: 2px; background: rgba(255,255,255,.16); position: relative; }
+  .ph-bar span i { position: absolute; inset: 0 auto 0 0; width: 31%; border-radius: 2px; background: var(--violet); }
+  .ph-bar span i::after { content: ""; position: absolute; right: -6px; top: -4px; width: 12px; height: 12px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 3px rgba(167,139,250,.35); }
+  .ph-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; }
+  .key { --c: #334155; aspect-ratio: 1; min-width: 0; position: relative; overflow: hidden; border-radius: 17px; border: 1px solid rgba(255,255,255,.18); cursor: pointer;
+    background: linear-gradient(180deg, rgba(255,255,255,.24), rgba(255,255,255,0) 44%),
+                linear-gradient(150deg, color-mix(in srgb, var(--c) 88%, #fff 12%), color-mix(in srgb, var(--c) 58%, transparent));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.3), 0 10px 22px -12px color-mix(in srgb, var(--c) 80%, transparent);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: #fff; font: 650 10.5px var(--body);
+    transition: transform .14s cubic-bezier(.3,1.5,.5,1), filter .14s; padding: 4px; }
+  .key svg { width: 24px; height: 24px; }
+  .key:active, .key.press { transform: scale(.92); filter: brightness(1.2); }
+  .key.on-mute { --c: #991b1b; border-color: #f87171; }
+  .key.on-mute::before { content: "MUDO"; position: absolute; top: 6px; right: 6px; font: 800 7.5px var(--body); letter-spacing: .06em; padding: 2px 4px; border-radius: 4px; background: #ef4444; }
+  .key.on-mute svg { opacity: .6; }
+  .key.on-on { box-shadow: inset 0 0 0 2px var(--violet), 0 0 22px -4px var(--violet); }
+  .key.on-on::before { content: "ATIVO"; position: absolute; top: 6px; right: 6px; font: 800 7.5px var(--body); letter-spacing: .06em; padding: 2px 4px; border-radius: 4px; background: var(--violet); color: #120a2a; }
+  .ph-nav { margin-top: auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; padding: 4px; border-radius: 18px; position: relative; }
+  .ph-nav button { all: unset; position: relative; z-index: 1; text-align: center; padding: 8px 2px; font: 650 11px var(--body); color: var(--muted); cursor: pointer; border-radius: 14px; }
+  .ph-nav button.active { color: var(--ink); }
+  .ph-nav .pill { position: absolute; top: 4px; bottom: 4px; left: 4px; width: calc((100% - 8px) / 3); border-radius: 14px;
+    background: linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,.04)), rgba(167,139,250,.32);
+    border: 1px solid rgba(167,139,250,.45); transition: transform .38s cubic-bezier(.3,1.3,.5,1); }
+  .ph-home { width: 110px; height: 4px; border-radius: 2px; background: rgba(255,255,255,.35); margin: 9px auto 0; }
+  .stage-hint { color: var(--muted); font-size: 13.5px; display: flex; align-items: center; gap: 8px; }
+  .stage-hint kbd { height: 1.7em; font-size: 11px; }
+
+  /* ---------- Faixa "controla" ---------- */
+  .works { padding-block: 0 8px; }
+  .works-in { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; justify-content: center; color: var(--muted); font-size: 14px; }
+  .works-in strong { font: 700 12px var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-right: 6px; }
+  .tag { padding: 7px 13px; border-radius: 999px; font-weight: 600; color: var(--ink); font-size: 14px; }
+
+  /* ---------- Funcionalidades ---------- */
+  .bento { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 16px; }
+  .card { border-radius: 26px; padding: 26px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+  .card p { color: var(--muted); font-size: 15.5px; }
+  .card .demo { margin-top: auto; padding-top: 14px; }
+  .span-3 { grid-column: span 3; } .span-2 { grid-column: span 2; } .span-4 { grid-column: span 4; }
+  .mini-now { border-radius: 16px; padding: 14px 16px; background: rgba(0,0,0,.25); border: 1px solid var(--line); }
+  .mini-now b { display: block; font-size: 15px; }
+  .mini-now small { color: var(--muted); font-size: 13px; }
+  .mini-now .ph-bar { font-size: 12px; margin-top: 10px; }
+  .mini-now .ph-bar span { height: 5px; }
+  .mini-now .ph-bar span i { width: 0; animation: play 30s linear infinite; }
+  @keyframes play { from { width: 2% } to { width: 98% } }
+  .tile-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .tile-row .key { width: 64px; flex: none; font-size: 9.5px; border-radius: 16px; cursor: default; }
+  .tile-row .key svg { width: 22px; height: 22px; }
+  .keys-demo { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; color: var(--muted); font: 500 13px var(--mono); }
+  .swatches { display: flex; flex-wrap: wrap; gap: 10px; }
+  .swatches span { display: grid; gap: 6px; justify-items: center; font-size: 12px; color: var(--muted); }
+  .swatches i { width: 46px; height: 46px; border-radius: 14px; box-shadow: inset 0 0 0 1px rgba(255,255,255,.18); }
+  .gesture { display: grid; gap: 10px; }
+  .gesture div { display: flex; align-items: center; gap: 12px; font-size: 14.5px; color: var(--ink); }
+  .gesture svg { width: 30px; height: 30px; flex: none; color: var(--violet); }
+  .lock { display: flex; gap: 12px; flex-wrap: wrap; }
+  .lock span { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 12px; background: rgba(0,0,0,.25); border: 1px solid var(--line); font-size: 13.5px; }
+  .lock svg { width: 16px; height: 16px; color: var(--green); }
+
+  /* ---------- Como funciona (sequência real: 1 → 2 → 3) ---------- */
+  .steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; counter-reset: s; }
+  .step { border-radius: 26px; padding: 28px; display: grid; gap: 12px; align-content: start; position: relative; }
+  .step::before { counter-increment: s; content: counter(s); font: 700 15px var(--display); width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center;
+    background: var(--violet); color: #120a2a; }
+  .step p { color: var(--muted); font-size: 15.5px; }
+  .qr { width: 88px; height: 88px; border-radius: 12px; background: #fff; padding: 8px; margin-top: 6px; }
+
+  /* ---------- Editor (ilustração) ---------- */
+  .editor-grid { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: clamp(28px, 5vw, 64px); align-items: center; }
+  .ticks { list-style: none; padding: 0; margin: 24px 0 0; display: grid; gap: 12px; }
+  .ticks li { display: flex; gap: 12px; color: var(--muted); }
+  .ticks li b { color: var(--ink); font-weight: 600; }
+  .ticks svg { width: 20px; height: 20px; flex: none; color: var(--violet); margin-top: 3px; }
+  .window { border-radius: 20px; overflow: hidden; box-shadow: 0 40px 90px -30px rgba(0,0,0,.8); }
+  .win-bar { display: flex; align-items: center; gap: 8px; padding: 12px 14px; border-bottom: 1px solid var(--line); font: 600 12.5px var(--body); color: var(--muted); }
+  .win-bar i { width: 11px; height: 11px; border-radius: 50%; background: #ff5f57; }
+  .win-bar i:nth-child(2) { background: #febc2e; } .win-bar i:nth-child(3) { background: #28c840; margin-right: 8px; }
+  .win-bar .save { margin-left: auto; font: 700 11px var(--body); padding: 5px 10px; border-radius: 8px; background: var(--violet); color: #120a2a; }
+  .win-body { display: grid; grid-template-columns: 0.9fr 1.1fr 1.1fr; gap: 12px; padding: 14px; min-height: 300px;
+    background: radial-gradient(60% 60% at 0% 0%, rgba(124,58,237,.25), transparent 70%), rgba(10,10,31,.6); }
+  .w-col { border-radius: 14px; padding: 12px; display: grid; gap: 8px; align-content: start; background: rgba(255,255,255,.05); border: 1px solid var(--line); min-width: 0; }
+  .w-label { font: 700 9.5px var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  .w-page { font-size: 12.5px; font-weight: 600; padding: 7px 9px; border-radius: 9px; display: flex; justify-content: space-between; }
+  .w-page.sel { background: rgba(167,139,250,.2); box-shadow: inset 0 0 0 1px rgba(167,139,250,.4); }
+  .w-page small { color: var(--muted); }
+  .w-phone { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 10px; border-radius: 16px; background: #0a0a1f; border: 6px solid #101221; }
+  .w-phone .key { border-radius: 11px; font-size: 7.5px; cursor: default; gap: 2px; }
+  .w-phone .key svg { width: 15px; height: 15px; }
+  .w-phone .key.sel { outline: 2px solid #fff; outline-offset: 2px; }
+  .w-field { display: grid; gap: 4px; }
+  .w-field span { font-size: 10px; color: var(--muted); font-weight: 600; }
+  .w-field div { font-size: 12px; padding: 7px 9px; border-radius: 8px; background: rgba(0,0,0,.3); border: 1px solid var(--line); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .w-colors { display: flex; gap: 5px; flex-wrap: wrap; }
+  .w-colors i { width: 16px; height: 16px; border-radius: 5px; }
+  .w-colors i.on { outline: 2px solid #fff; outline-offset: 1px; }
+
+  /* ---------- Sistemas ---------- */
+  .table-wrap { overflow-x: auto; border-radius: 22px; }
+  table { width: 100%; border-collapse: collapse; min-width: 640px; font-size: 15px; }
+  th, td { padding: 15px 18px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
+  thead th { font: 700 14px var(--body); background: rgba(255,255,255,.04); }
+  thead th small { display: block; font: 700 10px var(--mono); letter-spacing: .1em; color: var(--muted); margin-top: 3px; }
+  tbody tr:last-child td { border-bottom: 0; }
+  td:first-child { color: var(--ink); font-weight: 600; }
+  td { color: var(--muted); }
+  .y { color: var(--green); font-weight: 700; margin-right: 6px; }
+  .n { color: var(--muted); }
+  .beta { font: 700 10px var(--mono); padding: 3px 6px; border-radius: 6px; background: rgba(250,204,21,.16); color: #fde68a; letter-spacing: .06em; vertical-align: 2px; }
+
+  /* ---------- Privacidade ---------- */
+  .privacy { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: clamp(28px, 5vw, 64px); align-items: start; }
+  .p-list { display: grid; gap: 14px; }
+  .p-item { border-radius: 20px; padding: 20px 22px; display: grid; grid-template-columns: auto 1fr; gap: 6px 16px; }
+  .p-item svg { width: 26px; height: 26px; color: var(--green); grid-row: span 2; margin-top: 2px; }
+  .p-item p { color: var(--muted); font-size: 15px; }
+
+  /* ---------- Perguntas ---------- */
+  .faq { display: grid; gap: 10px; max-width: 820px; }
+  details { border-radius: 18px; padding: 0 22px; }
+  summary { cursor: pointer; list-style: none; padding: 18px 0; font-weight: 600; font-size: 16.5px; display: flex; justify-content: space-between; gap: 16px; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; font: 500 22px/1 var(--display); color: var(--violet); transition: transform .2s; }
+  details[open] summary::after { transform: rotate(45deg); }
+  details p { color: var(--muted); padding-bottom: 20px; max-width: 68ch; }
+
+  /* ---------- Download ---------- */
+  .dl { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  .dl-card { border-radius: 26px; padding: 28px; display: flex; flex-direction: column; gap: 14px; }
+  .dl-card.match { border-color: rgba(167,139,250,.6); box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 0 0 1px rgba(167,139,250,.35), 0 30px 60px -30px rgba(167,139,250,.6); }
+  .dl-card .os { display: flex; align-items: center; gap: 12px; }
+  .dl-card .os svg { width: 34px; height: 34px; }
+  .dl-card .os h3 { font: 700 20px var(--display); }
+  .dl-card p { color: var(--muted); font-size: 14.5px; }
+  .dl-card .meta { font: 500 12.5px var(--mono); color: var(--muted); }
+  .dl-card .btns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; }
+  .dl-foot { margin-top: 22px; display: flex; flex-wrap: wrap; gap: 8px 24px; color: var(--muted); font-size: 14px; }
+  .dl-foot a { color: var(--ink); }
+  .mobile-note { display: none; margin-bottom: 18px; border-radius: 16px; padding: 14px 18px; color: var(--muted); font-size: 15px; }
+  .mobile-note.show { display: block; }
+
+  footer { padding-block: 40px 56px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
+  footer .wrap { display: flex; flex-wrap: wrap; gap: 12px 28px; align-items: center; }
+  footer .brand { font-size: 14px; color: var(--ink); }
+
+  /* ---------- Responsivo ---------- */
+  @media (max-width: 960px) {
+    .hero-grid, .editor-grid, .privacy { grid-template-columns: minmax(0, 1fr); }
+    .stage { order: 2; }
+    .bento { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .span-3, .span-2, .span-4 { grid-column: span 1; }
+    .bento .wide { grid-column: span 2; }
+    .steps, .dl { grid-template-columns: minmax(0, 1fr); }
+    .nav-links { display: none; }
+    .nav-in .btn { margin-left: auto; }
+  }
+  @media (max-width: 620px) {
+    .bento { grid-template-columns: minmax(0, 1fr); }
+    .bento .wide { grid-column: span 1; }
+    .win-body { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+    .win-body .w-col:first-child { display: none; }
+    .card, .step, .dl-card { padding: 22px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Ícones (traço simples, cor do texto) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-prev" viewBox="0 0 24 24"><path fill="currentColor" d="M6 5h2v14H6zm3.5 7L18 6v12z"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path fill="currentColor" d="M5 5l9 7-9 7zm10 0h2v14h-2zm4 0h2v14h-2z"/></symbol>
+    <symbol id="i-next" viewBox="0 0 24 24"><path fill="currentColor" d="M16 5h2v14h-2zM6 6l8.5 6L6 18z"/></symbol>
+    <symbol id="i-vdown" viewBox="0 0 24 24"><path fill="currentColor" d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16.5 9.5a3.5 3.5 0 0 1 0 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-vup" viewBox="0 0 24 24"><path fill="currentColor" d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16.5 9.5a3.5 3.5 0 0 1 0 5M19 7a7 7 0 0 1 0 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-mute" viewBox="0 0 24 24"><path fill="currentColor" d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16 9l5 6m0-6l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3" fill="currentColor"/><path d="M6 11a6 6 0 0 0 12 0M12 17v4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path fill="currentColor" d="M20 15.5A8.5 8.5 0 0 1 8.5 4a8.5 8.5 0 1 0 11.5 11.5z"/></symbol>
+    <symbol id="i-cam" viewBox="0 0 24 24"><path fill="currentColor" d="M4 7h3l2-2h6l2 2h3v12H4zm8 3a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="2" fill="currentColor"/><path d="M8 10V7a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
+    <symbol id="i-folder" viewBox="0 0 24 24"><path fill="currentColor" d="M3 6h7l2 2h9v11H3z"/></symbol>
+    <symbol id="i-term" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2" fill="currentColor"/><path d="M7 9l3 3-3 3M12 15h5" fill="none" stroke="#0a0a1f" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2" fill="currentColor"/><path d="M4 7l8 6 8-6" fill="none" stroke="#0a0a1f" stroke-width="2"/></symbol>
+    <symbol id="i-note" viewBox="0 0 24 24"><path fill="currentColor" d="M5 3h10l4 4v14H5z"/><path d="M8 11h8M8 15h6" stroke="#0a0a1f" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M8.5 12l2.5 2.5 4.5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M11 12l8-8m-3 3l3 3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-swipe" viewBox="0 0 32 32"><path d="M6 16h20M21 11l5 5-5 5M11 11l-5 5 5 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-drag" viewBox="0 0 32 32"><rect x="4" y="11" width="24" height="10" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><rect x="13" y="13" width="9" height="6" rx="3" fill="currentColor"/></symbol>
+    <symbol id="i-hide" viewBox="0 0 32 32"><rect x="6" y="18" width="20" height="6" rx="3" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="3 3"/><path d="M16 6v8m-4-4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-rotate" viewBox="0 0 32 32"><rect x="6" y="4" width="11" height="20" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M21 9a8 8 0 0 1 5 7.5M26 13v4h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 4v11m-5-5l5 5 5-5M5 20h14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="os-mac" viewBox="0 0 24 24"><path fill="currentColor" d="M16.4 12.6c0-2.4 2-3.6 2.1-3.7-1.1-1.7-2.9-1.9-3.5-1.9-1.5-.2-2.9.9-3.7.9-.8 0-1.9-.9-3.2-.8-1.6 0-3.1 1-4 2.4-1.7 3-.4 7.4 1.2 9.8.8 1.2 1.8 2.5 3 2.4 1.2 0 1.7-.8 3.1-.8 1.5 0 1.9.8 3.2.8 1.3 0 2.1-1.2 2.9-2.4.9-1.4 1.3-2.7 1.3-2.8 0 0-2.4-1-2.4-3.9zM14 5.5c.7-.8 1.1-1.9 1-3-1 0-2.1.7-2.8 1.4-.6.7-1.2 1.8-1 2.9 1 .1 2.1-.5 2.8-1.3z"/></symbol>
+    <symbol id="os-win" viewBox="0 0 24 24"><path fill="currentColor" d="M3 5.5l7.5-1v7H3zm0 13l7.5 1v-7H3zm8.5 1.1L21 21v-8.5h-9.5zm0-15.2V11.5H21V3z"/></symbol>
+    <symbol id="os-linux" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2c-2.2 0-3.6 1.8-3.6 4.4 0 1.5.4 2.3.1 3.3-.4 1.3-2.5 3.3-2.8 6-.2 1.3.3 2.2 1 2.6-.4.6-.9 1.5-.2 2.3.9 1 3.2.3 4 .3h3c.8 0 3.1.7 4-.3.7-.8.2-1.7-.2-2.3.7-.4 1.2-1.3 1-2.6-.3-2.7-2.4-4.7-2.8-6-.3-1 .1-1.8.1-3.3C15.6 3.8 14.2 2 12 2zm-1.6 4.2c.4 0 .7.5.7 1.1s-.3 1.1-.7 1.1-.7-.5-.7-1.1.3-1.1.7-1.1zm3.2 0c.4 0 .7.5.7 1.1s-.3 1.1-.7 1.1-.7-.5-.7-1.1.3-1.1.7-1.1zM12 9.2c.9 0 2 .6 2 1s-1.1 1.1-2 1.1-2-.7-2-1.1 1.1-1 2-1z"/></symbol>
+  </defs>
+</svg>
+
+<header class="nav">
+  <div class="wrap">
+    <nav class="nav-in glass" aria-label="Principal">
+      <a class="brand" href="#topo"><img src="icon.svg" alt="">PhoneDeck</a>
+      <div class="nav-links">
+        <a href="#funcionalidades">Funcionalidades</a>
+        <a href="#como-funciona">Como funciona</a>
+        <a href="#sistemas">Sistemas</a>
+        <a href="#perguntas">Perguntas</a>
+      </div>
+      <a class="btn sm primary" href="#download">Descarregar</a>
+    </nav>
+  </div>
+</header>
+
+<main id="topo">
+  <!-- ======================= HERO ======================= -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <span class="chip glass"><b>v0.1.0</b> Grátis · macOS, Windows e Linux</span>
+        <h1>O teu computador, <em>num toque.</em></h1>
+        <p class="lede">O PhoneDeck transforma o telemóvel numa consola de botões para o computador. Música, volume, microfone, apps e atalhos ficam ao alcance do polegar. Sem contas, sem nuvem e sem instalar nada.</p>
+        <div class="cta-row">
+          <a class="btn primary" id="heroDl" href="#download">
+            <svg aria-hidden="true"><use href="#i-down"/></svg><span id="heroDlText">Descarregar grátis</span>
+          </a>
+          <a class="btn" href="#funcionalidades">Ver funcionalidades</a>
+          <span class="cta-meta" id="heroMeta">Um só ficheiro · abre com duplo clique</span>
+        </div>
+        <div class="facts">
+          <span><i></i>iPhone e Android, sem app da loja</span>
+          <span><i></i>Fica na tua rede Wi-Fi</span>
+          <span><i></i>Liga com um código QR</span>
+        </div>
+      </div>
+
+      <div class="stage">
+        <div class="phone" id="demoPhone" aria-label="Demonstração interativa do PhoneDeck">
+          <div class="ph-status"><span>9:41</span><i></i><span>5G</span></div>
+          <div class="ph-head">
+            <div><b>PhoneDeck</b><small id="demoPage">Media</small></div>
+            <div class="ph-vol glass" id="demoVol"><span><i></i></span><em id="demoVolTxt" style="font-style:normal">50%</em></div>
+          </div>
+          <div class="ph-now glass" id="demoNow">
+            <b id="demoTitle">Noite de Verão</b>
+            <small id="demoSub">▶︎ · Spotify · Os Azuis</small>
+            <div class="ph-bar"><em style="font-style:normal" id="demoA">1:23</em><span><i id="demoProg"></i></span><em style="font-style:normal">4:28</em></div>
+          </div>
+          <div class="ph-grid" id="demoGrid"></div>
+          <div class="ph-nav glass" id="demoNav" role="tablist" aria-label="Páginas">
+            <i class="pill" id="demoPill"></i>
+            <button class="active" role="tab" data-p="0">Media</button>
+            <button role="tab" data-p="1">Apps</button>
+            <button role="tab" data-p="2">Sistema</button>
+          </div>
+          <div class="ph-home"></div>
+        </div>
+        <p class="stage-hint">Experimenta: toca nos botões e nos separadores</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="works">
+    <div class="wrap works-in">
+      <strong>Controla</strong>
+      <span class="tag glass">Spotify</span><span class="tag glass">Música</span><span class="tag glass">YouTube</span>
+      <span class="tag glass">Twitch</span><span class="tag glass">VLC</span><span class="tag glass">QuickTime</span>
+      <span class="tag glass">Netflix no browser</span><span class="tag glass">qualquer app</span>
+    </div>
+  </div>
+
+  <!-- ======================= FUNCIONALIDADES ======================= -->
+  <section id="funcionalidades">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Funcionalidades</span>
+        <h2>Tudo o que fazes com o rato, a um toque.</h2>
+        <p class="lede">Cada botão faz uma coisa no computador. Tu escolhes quais, com que ícone e em que página.</p>
+      </div>
+
+      <div class="bento">
+        <article class="card glass span-4 wide">
+          <h3>A tocar, com barra de tempo</h3>
+          <p>Vê o que está a tocar e arrasta a barra para avançar ou recuar. Funciona com Spotify, Música, VLC, QuickTime e vídeos no Safari, Chrome, Brave e Edge, mesmo com o vídeo noutro separador.</p>
+          <div class="demo">
+            <div class="mini-now">
+              <b>Como fazer pão em casa</b>
+              <small>▶︎ · Brave Browser · www.youtube.com</small>
+              <div class="ph-bar"><em style="font-style:normal">2:05</em><span><i></i></span><em style="font-style:normal">15:01</em></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card glass span-2">
+          <h3>Volume e microfone</h3>
+          <p>Sabes sempre se o micro está desligado: o botão fica vermelho, riscado e com a etiqueta MUDO.</p>
+          <div class="demo tile-row">
+            <div class="key on-mute" style="--c:#0f766e"><svg><use href="#i-mic"/></svg>Micro</div>
+            <div class="key" style="--c:#64748b"><svg><use href="#i-vup"/></svg>Vol +</div>
+          </div>
+        </article>
+
+        <article class="card glass span-2">
+          <h3>Apps e sites com o ícone oficial</h3>
+          <p>Escreve o nome da app ou o endereço do site e o ícone aparece sozinho, na cor da marca.</p>
+          <div class="demo tile-row">
+            <div class="key" style="--c:#16a34a"><svg><use href="#i-play"/></svg>Spotify</div>
+            <div class="key" style="--c:#dc2626"><svg><use href="#i-globe"/></svg>YouTube</div>
+            <div class="key" style="--c:#2563eb"><svg><use href="#i-folder"/></svg>Finder</div>
+          </div>
+        </article>
+
+        <article class="card glass span-2">
+          <h3>Atalhos de teclado</h3>
+          <p>Carrega em Gravar, faz o atalho no teclado e fica guardado num botão. No Windows e no Linux, ⌘ passa a Ctrl.</p>
+          <div class="demo keys-demo"><kbd>⌘</kbd><kbd>⇧</kbd><kbd>4</kbd><span>captura de ecrã</span></div>
+        </article>
+
+        <article class="card glass span-2">
+          <h3>Estados ao vivo</h3>
+          <p>Os botões mostram se estão ativos: mute, microfone, modo escuro ou qualquer coisa que um script consiga verificar.</p>
+          <div class="demo tile-row">
+            <div class="key on-on" style="--c:#1e293b"><svg><use href="#i-moon"/></svg>Escuro</div>
+            <div class="key on-mute" style="--c:#64748b"><svg><use href="#i-mute"/></svg>Mute</div>
+          </div>
+        </article>
+
+        <article class="card glass span-3">
+          <h3>Temas em vidro</h3>
+          <p>Cinco fundos e a cor de destaque que quiseres. O editor e o telemóvel mudam ao mesmo tempo.</p>
+          <div class="demo swatches">
+            <span><i style="background:radial-gradient(80% 80% at 25% 20%,#7c3aed,transparent 70%),radial-gradient(80% 80% at 85% 85%,#db2777,transparent 70%),#0a0a1f"></i>Aurora</span>
+            <span><i style="background:radial-gradient(80% 80% at 25% 20%,#0891b2,transparent 70%),radial-gradient(80% 80% at 85% 85%,#0d9488,transparent 70%),#03141f"></i>Oceano</span>
+            <span><i style="background:radial-gradient(80% 80% at 25% 20%,#ea580c,transparent 70%),radial-gradient(80% 80% at 85% 85%,#7c3aed,transparent 70%),#170a10"></i>Pôr do sol</span>
+            <span><i style="background:radial-gradient(80% 80% at 25% 20%,#16a34a,transparent 70%),radial-gradient(80% 80% at 85% 85%,#4d7c0f,transparent 70%),#05140d"></i>Floresta</span>
+            <span><i style="background:radial-gradient(80% 80% at 25% 20%,#475569,transparent 70%),radial-gradient(80% 80% at 85% 85%,#64748b,transparent 70%),#0b0d12"></i>Grafite</span>
+          </div>
+        </article>
+
+        <article class="card glass span-3">
+          <h3>Feito para o polegar</h3>
+          <p>Gestos que se usam sem olhar, na vertical ou na horizontal.</p>
+          <div class="demo gesture">
+            <div><svg><use href="#i-swipe"/></svg>Desliza o ecrã para mudar de página</div>
+            <div><svg><use href="#i-drag"/></svg>Arrasta o dedo na barra para escolher a página</div>
+            <div><svg><use href="#i-hide"/></svg>A barra recolhe sozinha ao fim de 5 segundos</div>
+            <div><svg><use href="#i-rotate"/></svg>Deitado, os botões reorganizam-se para caber tudo</div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= COMO FUNCIONA ======================= -->
+  <section id="como-funciona">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Como funciona</span>
+        <h2>Pronto em menos de um minuto.</h2>
+        <p class="lede">O programa corre no computador e o telemóvel liga-se a ele pela tua rede Wi-Fi.</p>
+      </div>
+      <div class="steps">
+        <div class="step glass">
+          <h3>Descarrega e abre</h3>
+          <p>Um ficheiro para o teu sistema, sem instalação. Abre com duplo clique e o editor aparece no browser.</p>
+        </div>
+        <div class="step glass">
+          <h3>Lê o código QR</h3>
+          <p>Aponta a câmara do telemóvel ao código que o editor mostra. Adiciona ao ecrã principal e passa a abrir como uma app.</p>
+          <svg class="qr" viewBox="0 0 21 21" aria-hidden="true" shape-rendering="crispEdges">
+            <path fill="#0a0a1f" d="M0 0h7v7H0zm1 1v5h5V1zm1 1h3v3H2zm12-2h7v7h-7zm1 1v5h5V1zm1 1h3v3h-3zM0 14h7v7H0zm1 1v5h5v-5zm1 1h3v3H2zM8 0h1v2H8zm2 0h2v1h-2zm1 2h1v2h-1zM8 4h2v2H8zm3 1h2v1h-2zm-3 3h3v1H8zm4 0h1v3h-1zM0 8h2v1H0zm3 0h3v1H3zm11 0h2v1h-2zm3 0h4v1h-4zM1 10h2v2H1zm4 0h3v1H5zm4 0h2v2H9zm5 0h1v2h-1zm2 0h3v1h-3zm4 1h1v3h-1zM6 12h2v1H6zm6 0h2v2h-2zm4 1h2v2h-2zm-8 1h3v1H8zm2 2h2v2h-2zm3 0h1v3h-1zm2 1h3v1h-3zm4 1h2v3h-2zM8 18h2v3H8zm6 1h3v2h-3z"/>
+          </svg>
+        </div>
+        <div class="step glass">
+          <h3>Personaliza no editor</h3>
+          <p>Cria páginas e botões, escolhe ícones e cores, testa cada botão e guarda. O telemóvel atualiza sozinho.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= EDITOR ======================= -->
+  <section id="editor">
+    <div class="wrap editor-grid">
+      <div>
+        <span class="eyebrow">Editor</span>
+        <h2 style="margin-top:14px">Monta a tua consola no computador.</h2>
+        <ul class="ticks">
+          <li><svg><use href="#i-check"/></svg><span><b>Arrasta para ordenar</b> botões e páginas.</span></li>
+          <li><svg><use href="#i-check"/></svg><span><b>Ícones oficiais automáticos</b>, emojis ou uma imagem tua.</span></li>
+          <li><svg><use href="#i-check"/></svg><span><b>Testa antes de guardar</b>: o botão corre no computador na hora.</span></li>
+          <li><svg><use href="#i-check"/></svg><span><b>Pré-visualização</b> no tamanho de um telemóvel, na vertical e na horizontal.</span></li>
+          <li><svg><use href="#i-check"/></svg><span><b>Só abre no próprio computador</b>: do telemóvel só se carrega nos botões.</span></li>
+        </ul>
+      </div>
+      <div class="window glass" aria-label="Ilustração do editor">
+        <div class="win-bar"><i></i><i></i><i></i>PhoneDeck Editor<span class="save">Guardar</span></div>
+        <div class="win-body">
+          <div class="w-col">
+            <span class="w-label">Páginas</span>
+            <div class="w-page sel">Media <small>10</small></div>
+            <div class="w-page">Apps <small>9</small></div>
+            <div class="w-page">Atalhos <small>9</small></div>
+            <div class="w-page">Sistema <small>6</small></div>
+            <span class="w-label" style="margin-top:8px">Aparência</span>
+            <div class="w-colors"><i class="on" style="background:#a78bfa"></i><i style="background:#60a5fa"></i><i style="background:#22d3ee"></i><i style="background:#4ade80"></i><i style="background:#facc15"></i><i style="background:#fb923c"></i></div>
+          </div>
+          <div class="w-col" style="background:none;border:0;padding:0;align-content:center">
+            <div class="w-phone">
+              <div class="key" style="--c:#3b82f6"><svg><use href="#i-prev"/></svg>Anterior</div>
+              <div class="key" style="--c:#22c55e"><svg><use href="#i-play"/></svg>Play</div>
+              <div class="key" style="--c:#3b82f6"><svg><use href="#i-next"/></svg>Seguinte</div>
+              <div class="key" style="--c:#64748b"><svg><use href="#i-vdown"/></svg>Vol −</div>
+              <div class="key sel" style="--c:#64748b"><svg><use href="#i-mute"/></svg>Mute</div>
+              <div class="key" style="--c:#64748b"><svg><use href="#i-vup"/></svg>Vol +</div>
+              <div class="key" style="--c:#0f766e"><svg><use href="#i-mic"/></svg>Micro</div>
+            </div>
+          </div>
+          <div class="w-col">
+            <span class="w-label">Botão</span>
+            <label class="w-field"><span>Nome</span><div>Mute</div></label>
+            <label class="w-field"><span>O que faz</span><div>Volume · silenciar / repor</div></label>
+            <label class="w-field"><span>Cor</span><span class="w-colors"><i style="background:#3b82f6"></i><i style="background:#22c55e"></i><i class="on" style="background:#64748b"></i><i style="background:#ef4444"></i><i style="background:#a855f7"></i></span></label>
+            <label class="w-field"><span>Estado no telemóvel</span><div>✓ Mostrar MUDO</div></label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= SISTEMAS ======================= -->
+  <section id="sistemas">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Sistemas</span>
+        <h2>macOS, Windows e Linux.</h2>
+        <p class="lede">O telemóvel funciona igual em iPhone e Android. No computador, isto é o que cada sistema já faz nesta versão.</p>
+      </div>
+      <div class="table-wrap glass">
+        <table>
+          <thead>
+            <tr><th>Funcionalidade</th><th>macOS</th><th>Windows <span class="beta">BETA</span></th><th>Linux <span class="beta">BETA</span></th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Volume, mute e microfone</td><td><span class="y">✓</span></td><td><span class="y">✓</span></td><td><span class="y">✓</span>com pactl</td></tr>
+            <tr><td>Play, pausa, seguinte, anterior</td><td><span class="y">✓</span></td><td><span class="y">✓</span>teclas de media</td><td><span class="y">✓</span>com playerctl</td></tr>
+            <tr><td>Barra de tempo do que está a tocar</td><td><span class="y">✓</span>apps e vídeos no browser</td><td><span class="n">Em breve</span></td><td><span class="y">✓</span>com playerctl</td></tr>
+            <tr><td>Abrir apps e sites</td><td><span class="y">✓</span></td><td><span class="y">✓</span>Menu Iniciar</td><td><span class="y">✓</span></td></tr>
+            <tr><td>Atalhos de teclado</td><td><span class="y">✓</span></td><td><span class="y">✓</span></td><td><span class="y">✓</span>com xdotool</td></tr>
+            <tr><td>Comandos e scripts</td><td><span class="y">✓</span>Terminal e AppleScript</td><td><span class="y">✓</span>Linha de comandos</td><td><span class="y">✓</span>Terminal</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= PRIVACIDADE ======================= -->
+  <section id="privacidade">
+    <div class="wrap privacy">
+      <div class="section-head" style="margin:0">
+        <span class="eyebrow">Privacidade</span>
+        <h2>Fica entre o teu telemóvel e o teu computador.</h2>
+        <p class="lede">Não há contas, anúncios nem recolha de dados. O PhoneDeck não precisa de internet para funcionar.</p>
+      </div>
+      <div class="p-list">
+        <div class="p-item glass"><svg><use href="#i-home"/></svg><h3>Na tua rede</h3><p>O telemóvel fala diretamente com o computador pelo Wi-Fi de casa ou do escritório. Nada passa por servidores de terceiros.</p></div>
+        <div class="p-item glass"><svg><use href="#i-key"/></svg><h3>Código de acesso próprio</h3><p>Cada computador gera o seu código. Sem ele, ninguém na rede consegue carregar nos teus botões.</p></div>
+        <div class="p-item glass"><svg><use href="#i-shield"/></svg><h3>Editor fechado ao exterior</h3><p>Os botões só se criam e alteram no próprio computador. O telemóvel apenas os usa.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= PERGUNTAS ======================= -->
+  <section id="perguntas">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Perguntas</span>
+        <h2>Perguntas frequentes</h2>
+      </div>
+      <div class="faq">
+        <details class="glass"><summary>Preciso de instalar uma app no telemóvel?</summary>
+          <p>Não. Abres o endereço do código QR no browser do telemóvel (Safari, Chrome…) e escolhes "Adicionar ao ecrã principal". A partir daí abre em ecrã inteiro, como uma app.</p></details>
+        <details class="glass"><summary>Funciona fora de casa?</summary>
+          <p>Nesta versão, o telemóvel e o computador têm de estar na mesma rede Wi-Fi. O acesso remoto seguro está nos planos.</p></details>
+        <details class="glass"><summary>Porque aparece um aviso de segurança ao abrir?</summary>
+          <p>O programa ainda não tem assinatura digital da Apple nem da Microsoft, por isso o sistema pede confirmação na primeira vez. No Mac: botão direito → Abrir. No Windows: Mais informações → Executar mesmo assim. As instruções vêm no ficheiro LEIA-ME.</p></details>
+        <details class="glass"><summary>É grátis?</summary>
+          <p>Sim. Esta versão é gratuita.</p></details>
+        <details class="glass"><summary>Posso levar os meus botões para outro computador?</summary>
+          <p>Sim. Os botões, as páginas e o tema ficam num ficheiro, o config.json, na pasta do programa. Copia-o para a pasta do PhoneDeck no outro computador.</p></details>
+        <details class="glass"><summary>Que telemóveis funcionam?</summary>
+          <p>iPhone e Android com um browser atual. A vibração ao tocar nos botões funciona no Android.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= DOWNLOAD ======================= -->
+  <section id="download">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Download · v0.1.0</span>
+        <h2>Descarrega o PhoneDeck</h2>
+        <p class="lede">Extrai o ficheiro, abre o programa e segue o LEIA-ME que vem dentro.</p>
+      </div>
+      <p class="mobile-note glass" id="mobileNote">Estás no telemóvel. O PhoneDeck instala-se no <b>computador</b>: abre esta página lá. Depois, o telemóvel liga-se pelo código QR.</p>
+      <div class="dl">
+        <article class="dl-card glass" data-os="mac">
+          <div class="os"><svg aria-hidden="true"><use href="#os-mac"/></svg><h3>macOS</h3></div>
+          <p>Para Mac com Apple Silicon ou Intel. macOS 11 ou mais recente.</p>
+          <span class="meta">PhoneDeck-macOS.zip · 6,3 MB</span>
+          <div class="btns"><a class="btn primary" href="https://github.com/strudall/phonedeck-app/releases/latest/download/PhoneDeck-macOS.zip"><svg aria-hidden="true"><use href="#i-down"/></svg>Descarregar</a></div>
+        </article>
+        <article class="dl-card glass" data-os="win">
+          <div class="os"><svg aria-hidden="true"><use href="#os-win"/></svg><h3>Windows <span class="beta">BETA</span></h3></div>
+          <p>Para Windows 10 e 11 de 64 bits.</p>
+          <span class="meta">PhoneDeck-Windows.zip · 3,4 MB</span>
+          <div class="btns"><a class="btn primary" href="https://github.com/strudall/phonedeck-app/releases/latest/download/PhoneDeck-Windows.zip"><svg aria-hidden="true"><use href="#i-down"/></svg>Descarregar</a></div>
+        </article>
+        <article class="dl-card glass" data-os="linux">
+          <div class="os"><svg aria-hidden="true"><use href="#os-linux"/></svg><h3>Linux <span class="beta">BETA</span></h3></div>
+          <p>PC (x64) ou ARM, como o Raspberry Pi. Usa pactl, playerctl e xdotool.</p>
+          <span class="meta">.tar.gz · 2,9–3,2 MB</span>
+          <div class="btns">
+            <a class="btn primary" href="https://github.com/strudall/phonedeck-app/releases/latest/download/PhoneDeck-Linux-x64.tar.gz"><svg aria-hidden="true"><use href="#i-down"/></svg>x64</a>
+            <a class="btn" href="https://github.com/strudall/phonedeck-app/releases/latest/download/PhoneDeck-Linux-arm64.tar.gz">ARM64</a>
+          </div>
+        </article>
+      </div>
+      <div class="dl-foot">
+        <span><a href="https://github.com/strudall/phonedeck-app/releases">Todas as versões e novidades</a></span>
+        <span><a href="https://github.com/strudall/phonedeck-app/releases/latest/download/SHA256SUMS.txt">Impressões digitais (SHA-256)</a></span>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span class="brand"><img src="icon.svg" alt="" width="22" height="22" style="border-radius:6px">PhoneDeck</span>
+    <span>Versão 0.1.0</span>
+    <span>Ícones de marcas: <a href="https://simpleicons.org">Simple Icons</a>. As marcas pertencem aos respetivos donos.</span>
+  </div>
+</footer>
+
+<script>
+// ---------- Download: deteta o sistema de quem visita ----------
+(() => {
+  const ua = navigator.userAgent, plat = (navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || '';
+  const mobile = /Android|iPhone|iPad|iPod/i.test(ua) || (/Mac/.test(plat) && navigator.maxTouchPoints > 1);
+  const os = mobile ? null : /Win/i.test(plat) ? 'win' : /Mac/i.test(plat) ? 'mac' : /Linux|X11/i.test(plat + ua) ? 'linux' : null;
+  const info = { mac: ['macOS', '6,3 MB'], win: ['Windows', '3,4 MB'], linux: ['Linux', '3,2 MB'] };
+  if (mobile) document.getElementById('mobileNote').classList.add('show');
+  if (!os) return;
+  const card = document.querySelector(`.dl-card[data-os="${os}"]`);
+  card.classList.add('match');
+  card.parentNode.prepend(card);                     // o teu sistema aparece primeiro
+  const link = card.querySelector('.btn.primary').href;
+  const hero = document.getElementById('heroDl');
+  hero.href = link;
+  document.getElementById('heroDlText').textContent = 'Descarregar para ' + info[os][0];
+  document.getElementById('heroMeta').textContent = `v0.1.0 · ${info[os][1]} · um só ficheiro, sem instalar`;
+})();
+
+// ---------- Telemóvel interativo ----------
+(() => {
+  const pages = [
+    { name: 'Media', keys: [
+      { i: 'prev', l: 'Anterior', c: '#3b82f6', a: 'prev' }, { i: 'play', l: 'Play/Pausa', c: '#22c55e', a: 'play' },
+      { i: 'next', l: 'Seguinte', c: '#3b82f6', a: 'next' }, { i: 'vdown', l: 'Vol −', c: '#64748b', a: 'vdown' },
+      { i: 'mute', l: 'Mute', c: '#64748b', a: 'mute' }, { i: 'vup', l: 'Vol +', c: '#64748b', a: 'vup' },
+      { i: 'mic', l: 'Microfone', c: '#0f766e', a: 'mic' } ] },
+    { name: 'Apps', keys: [
+      { i: 'globe', l: 'Safari', c: '#0ea5e9' }, { i: 'play', l: 'Spotify', c: '#16a34a' }, { i: 'note', l: 'Notas', c: '#ca8a04' },
+      { i: 'folder', l: 'Finder', c: '#2563eb' }, { i: 'term', l: 'Terminal', c: '#334155' }, { i: 'mail', l: 'Mail', c: '#0284c7' },
+      { i: 'globe', l: 'YouTube', c: '#dc2626' } ] },
+    { name: 'Sistema', keys: [
+      { i: 'moon', l: 'Modo escuro', c: '#1e293b', a: 'dark' }, { i: 'cam', l: 'Captura', c: '#0d9488' }, { i: 'lock', l: 'Bloquear', c: '#b45309' } ] },
+  ];
+  const tracks = [['Noite de Verão', 'Os Azuis', 268], ['Maré Alta', 'Clara Lume', 214], ['Luzes da Cidade', 'Norte Sul', 301]];
+  const st = { page: 0, vol: 50, muted: false, mic: false, dark: true, playing: true, t: 0, pos: 83 };
+  const $ = id => document.getElementById(id);
+  const fmt = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+
+  function renderNow() {
+    const [title, artist, dur] = tracks[st.t];
+    $('demoTitle').textContent = title;
+    $('demoSub').textContent = `${st.playing ? '▶︎' : '⏸'} · Spotify · ${artist}`;
+    $('demoA').textContent = fmt(st.pos);
+    $('demoA').nextElementSibling.nextElementSibling.textContent = fmt(dur);
+    $('demoProg').style.width = (st.pos / dur * 100) + '%';
+    $('demoVol').classList.toggle('muted', st.muted);
+    $('demoVol').querySelector('i').style.width = st.vol + '%';
+    $('demoVolTxt').textContent = st.muted ? 'mute' : st.vol + '%';
+  }
+  function renderGrid() {
+    const p = pages[st.page];
+    $('demoPage').textContent = p.name;
+    $('demoNow').style.display = st.page === 0 ? '' : 'none';
+    $('demoGrid').replaceChildren(...p.keys.map(k => {
+      const b = document.createElement('button');
+      b.className = 'key';
+      b.style.setProperty('--c', k.c);
+      if (k.a === 'mute' && st.muted) b.classList.add('on-mute');
+      if (k.a === 'mic' && st.mic) b.classList.add('on-mute');
+      if (k.a === 'dark' && st.dark) b.classList.add('on-on');
+      b.innerHTML = `<svg aria-hidden="true"><use href="#i-${k.i}"/></svg>`;
+      b.append(k.l);
+      b.onclick = () => press(k, b);
+      return b;
+    }));
+  }
+  function press(k, el) {
+    el.classList.remove('press'); void el.offsetWidth; el.classList.add('press');
+    setTimeout(() => el.classList.remove('press'), 160);
+    navigator.vibrate?.(12);
+    const dur = tracks[st.t][2];
+    switch (k.a) {
+      case 'play': st.playing = !st.playing; break;
+      case 'next': st.t = (st.t + 1) % tracks.length; st.pos = 0; st.playing = true; break;
+      case 'prev': st.pos > 5 ? st.pos = 0 : (st.t = (st.t + tracks.length - 1) % tracks.length, st.pos = 0); break;
+      case 'vup': st.muted = false; st.vol = Math.min(100, st.vol + 6); break;
+      case 'vdown': st.muted = false; st.vol = Math.max(0, st.vol - 6); break;
+      case 'mute': st.muted = !st.muted; break;
+      case 'mic': st.mic = !st.mic; break;
+      case 'dark': st.dark = !st.dark; break;
+    }
+    if (st.pos > dur) st.pos = 0;
+    renderNow(); renderGrid();
+  }
+  function setPage(i) {
+    st.page = i;
+    document.querySelectorAll('#demoNav button').forEach((b, j) => b.classList.toggle('active', j === i));
+    $('demoPill').style.transform = `translateX(calc(${i} * (100% + 2px)))`;
+    renderGrid();
+  }
+  document.querySelectorAll('#demoNav button').forEach((b, i) => b.onclick = () => setPage(i));
+  setInterval(() => {
+    if (!st.playing) return;
+    st.pos += 1;
+    if (st.pos >= tracks[st.t][2]) { st.t = (st.t + 1) % tracks.length; st.pos = 0; }
+    renderNow();
+  }, 1000);
+  renderNow(); renderGrid();
+})();
+</script>
+</body>
+</html>
