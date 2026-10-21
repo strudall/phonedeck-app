@@ -1,12 +1,12 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="pt">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>PhoneDeck</title>
-<meta name="description" content="Transforma o telemóvel numa consola de botões para o computador: música, volume, microfone, apps e atalhos. Grátis para macOS, Windows e Linux.">
+<meta name="description" content="Transforma o telemóvel numa consola de botões para o PC: música, volume, microfone, apps, atalhos e streams. Grátis para Windows 10 e 11.">
 <meta property="og:title" content="PhoneDeck">
-<meta property="og:description" content="O teu computador, num toque. Música, volume, microfone, apps e atalhos a partir do telemóvel.">
+<meta property="og:description" content="O teu PC, num toque. Música, volume, microfone, apps, atalhos e streams a partir do telemóvel.">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#08081a">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
@@ -16,7 +16,7 @@
 <style>
   /* Página de produto em vidro escuro, com a identidade da app (tema Aurora).
      Layout: hero dividido (texto | telemóvel interativo) → grelha de funcionalidades em
-     "teclas" de vidro → passos → editor → sistemas → privacidade → perguntas → downloads. */
+     "teclas" de vidro → passos → editor → Windows → privacidade → perguntas → downloads. */
   :root {
     color-scheme: dark;
     --base: #08081a;       /* fundo */
@@ -136,6 +136,7 @@
   .key.on-mute svg { opacity: .6; }
   .key.on-on { box-shadow: inset 0 0 0 2px var(--violet), 0 0 22px -4px var(--violet); }
   .key.on-on::before { content: "ATIVO"; position: absolute; top: 6px; right: 6px; font: 800 7.5px var(--body); letter-spacing: .06em; padding: 2px 4px; border-radius: 4px; background: var(--violet); color: #120a2a; }
+  .key.on-live::before { content: "AO VIVO"; position: absolute; top: 6px; right: 6px; font: 800 7.5px var(--body); letter-spacing: .06em; padding: 2px 4px; border-radius: 4px; background: #ef4444; }
   .ph-nav { margin-top: auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; padding: 4px; border-radius: 18px; position: relative; }
   .ph-nav button { all: unset; position: relative; z-index: 1; text-align: center; padding: 8px 2px; font: 650 11px var(--body); color: var(--muted); cursor: pointer; border-radius: 14px; }
   .ph-nav button.active { color: var(--ink); }
@@ -218,7 +219,7 @@
 
   /* ---------- Sistemas ---------- */
   .table-wrap { overflow-x: auto; border-radius: 22px; }
-  table { width: 100%; border-collapse: collapse; min-width: 640px; font-size: 15px; }
+  table { width: 100%; border-collapse: collapse; min-width: 480px; font-size: 15px; }
   th, td { padding: 15px 18px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
   thead th { font: 700 14px var(--body); background: rgba(255,255,255,.04); }
   thead th small { display: block; font: 700 10px var(--mono); letter-spacing: .1em; color: var(--muted); margin-top: 3px; }
@@ -246,7 +247,7 @@
   details p { color: var(--muted); padding-bottom: 20px; max-width: 68ch; }
 
   /* ---------- Download ---------- */
-  .dl { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  .dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
   .dl-card { border-radius: 26px; padding: 28px; display: flex; flex-direction: column; gap: 14px; }
   .dl-card.match { border-color: rgba(167,139,250,.6); box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 0 0 1px rgba(167,139,250,.35), 0 30px 60px -30px rgba(167,139,250,.6); }
   .dl-card .os { display: flex; align-items: center; gap: 12px; }
@@ -281,6 +282,8 @@
     .win-body { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
     .win-body .w-col:first-child { display: none; }
     .card, .step, .dl-card { padding: 22px; }
+    table { min-width: 0; font-size: 14px; }
+    th, td { padding: 12px 14px; }
   }
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
@@ -316,6 +319,14 @@
     <symbol id="i-drag" viewBox="0 0 32 32"><rect x="4" y="11" width="24" height="10" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><rect x="13" y="13" width="9" height="6" rx="3" fill="currentColor"/></symbol>
     <symbol id="i-hide" viewBox="0 0 32 32"><rect x="6" y="18" width="20" height="6" rx="3" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="3 3"/><path d="M16 6v8m-4-4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-rotate" viewBox="0 0 32 32"><rect x="6" y="4" width="11" height="20" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M21 9a8 8 0 0 1 5 7.5M26 13v4h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" fill="currentColor"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-eq" viewBox="0 0 24 24"><path d="M6 4v16M12 4v16M18 4v16" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".45"/><rect x="3.5" y="12" width="5" height="3" rx="1.5" fill="currentColor"/><rect x="9.5" y="6" width="5" height="3" rx="1.5" fill="currentColor"/><rect x="15.5" y="15" width="5" height="3" rx="1.5" fill="currentColor"/></symbol>
+    <symbol id="i-bulb" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2zM9 19h6v1.5a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 20.5z"/></symbol>
+    <symbol id="i-live" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="currentColor"/><path d="M7.8 7.8a6 6 0 0 0 0 8.4M16.2 7.8a6 6 0 0 1 0 8.4M5 5a10 10 0 0 0 0 14M19 5a10 10 0 0 1 0 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path fill="currentColor" d="M4 5h16v11H9l-5 4z"/></symbol>
+    <symbol id="i-rec" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="5" fill="currentColor"/></symbol>
+    <symbol id="i-update" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.7M20 4v5h-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="os-android" viewBox="0 0 24 24"><path fill="currentColor" d="M7 9h10v8a1 1 0 0 1-1 1h-1v3h-2v-3h-2v3H9v-3H8a1 1 0 0 1-1-1zm-3 0h2v7H4zm14 0h2v7h-2zM7.5 8a4.5 4.5 0 0 1 9 0zm2.3-4.6l-1-1.6.6-.4 1 1.7zm4.4 0l1-1.7.6.4-1 1.6zM10 5.5a.6.6 0 1 0 0 1.2.6.6 0 0 0 0-1.2zm4 0a.6.6 0 1 0 0 1.2.6.6 0 0 0 0-1.2z"/></symbol>
     <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 4v11m-5-5l5 5 5-5M5 20h14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="os-mac" viewBox="0 0 24 24"><path fill="currentColor" d="M16.4 12.6c0-2.4 2-3.6 2.1-3.7-1.1-1.7-2.9-1.9-3.5-1.9-1.5-.2-2.9.9-3.7.9-.8 0-1.9-.9-3.2-.8-1.6 0-3.1 1-4 2.4-1.7 3-.4 7.4 1.2 9.8.8 1.2 1.8 2.5 3 2.4 1.2 0 1.7-.8 3.1-.8 1.5 0 1.9.8 3.2.8 1.3 0 2.1-1.2 2.9-2.4.9-1.4 1.3-2.7 1.3-2.8 0 0-2.4-1-2.4-3.9zM14 5.5c.7-.8 1.1-1.9 1-3-1 0-2.1.7-2.8 1.4-.6.7-1.2 1.8-1 2.9 1 .1 2.1-.5 2.8-1.3z"/></symbol>
     <symbol id="os-win" viewBox="0 0 24 24"><path fill="currentColor" d="M3 5.5l7.5-1v7H3zm0 13l7.5 1v-7H3zm8.5 1.1L21 21v-8.5h-9.5zm0-15.2V11.5H21V3z"/></symbol>
@@ -330,7 +341,7 @@
       <div class="nav-links">
         <a href="#funcionalidades">Funcionalidades</a>
         <a href="#como-funciona">Como funciona</a>
-        <a href="#sistemas">Sistemas</a>
+        <a href="#windows">Windows</a>
         <a href="#perguntas">Perguntas</a>
       </div>
       <a class="btn sm primary" href="#download">Descarregar</a>
@@ -343,20 +354,20 @@
   <section class="hero">
     <div class="wrap hero-grid">
       <div>
-        <span class="chip glass"><b>v0.2.0</b> Grátis · macOS, Windows e Linux</span>
-        <h1>O teu computador, <em>num toque.</em></h1>
-        <p class="lede">O PhoneDeck transforma o telemóvel numa consola de botões para o computador. Música, volume, microfone, apps e atalhos ficam ao alcance do polegar. Sem contas, sem nuvem e sem instalar nada.</p>
+        <span class="chip glass"><b>v0.2.1</b> Grátis · Windows 10 e 11</span>
+        <h1>O teu PC, <em>num toque.</em></h1>
+        <p class="lede">O PhoneDeck transforma o telemóvel numa consola de botões para o Windows. Música, volume, microfone, apps, atalhos e os teus streams ficam ao alcance do polegar. Sem contas, sem nuvem e sem instalação.</p>
         <div class="cta-row">
           <a class="btn primary" id="heroDl" href="#download">
             <svg aria-hidden="true"><use href="#i-down"/></svg><span id="heroDlText">Descarregar grátis</span>
           </a>
           <a class="btn" href="#funcionalidades">Ver funcionalidades</a>
-          <span class="cta-meta" id="heroMeta">Sem instalar nada · abre com duplo clique</span>
+          <span class="cta-meta" id="heroMeta">Um só ficheiro · abre com duplo clique</span>
         </div>
         <div class="facts">
-          <span><i></i>iPhone e Android, sem app da loja</span>
+          <span><i></i>App para Android ou browser no iPhone</span>
           <span><i></i>Fica na tua rede Wi-Fi</span>
-          <span><i></i>Liga com um código QR</span>
+          <span><i></i>Avisa quando há versão nova</span>
         </div>
       </div>
 
@@ -389,8 +400,8 @@
   <div class="works">
     <div class="wrap works-in">
       <strong>Controla</strong>
-      <span class="tag glass">Spotify</span><span class="tag glass">Música</span><span class="tag glass">YouTube</span>
-      <span class="tag glass">Twitch</span><span class="tag glass">VLC</span><span class="tag glass">QuickTime</span>
+      <span class="tag glass">Spotify</span><span class="tag glass">YouTube</span><span class="tag glass">Twitch</span>
+      <span class="tag glass">Kick</span><span class="tag glass">Discord</span><span class="tag glass">OBS</span><span class="tag glass">VLC</span>
       <span class="tag glass">Netflix no browser</span><span class="tag glass">qualquer app</span>
     </div>
   </div>
@@ -407,11 +418,11 @@
       <div class="bento">
         <article class="card glass span-4 wide">
           <h3>A tocar, com barra de tempo</h3>
-          <p>Vê o que está a tocar e arrasta a barra para avançar ou recuar. Funciona com Spotify, Música, VLC, QuickTime e vídeos no Safari, Chrome, Brave e Edge, mesmo com o vídeo noutro separador.</p>
+          <p>Vê o que está a tocar, com a capa ou a miniatura do vídeo, e arrasta a barra para avançar ou recuar. Funciona com Spotify, VLC, o Multimédia do Windows e vídeos no Chrome, Edge, Brave, Opera e Firefox, mesmo com o vídeo noutro separador.</p>
           <div class="demo">
             <div class="mini-now">
               <b>Como fazer pão em casa</b>
-              <small>▶︎ · Brave Browser · www.youtube.com</small>
+              <small>▶︎ · Brave · Cozinha da Avó</small>
               <div class="ph-bar"><em style="font-style:normal">2:05</em><span><i></i></span><em style="font-style:normal">15:01</em></div>
             </div>
           </div>
@@ -419,7 +430,7 @@
 
         <article class="card glass span-2">
           <h3>Volume e microfone</h3>
-          <p>Sabes sempre se o micro está desligado: o botão fica vermelho, riscado e com a etiqueta MUDO.</p>
+          <p>Com vários microfones, escolhes qual o botão desliga. Sabes sempre quando está desligado: o botão fica vermelho, com a etiqueta MUDO.</p>
           <div class="demo tile-row">
             <div class="key on-mute" style="--c:#0f766e"><svg><use href="#i-mic"/></svg>Micro</div>
             <div class="key" style="--c:#64748b"><svg><use href="#i-vup"/></svg>Vol +</div>
@@ -427,26 +438,46 @@
         </article>
 
         <article class="card glass span-2">
-          <h3>Apps e sites com o ícone oficial</h3>
-          <p>Escreve o nome da app ou o endereço do site e o ícone aparece sozinho, na cor da marca.</p>
+          <h3>Deslizadores</h3>
+          <p>Arrasta o dedo para mudar o volume, o brilho do monitor, o equalizador (com o Equalizer APO) ou as luzes da casa (com o Home Assistant).</p>
           <div class="demo tile-row">
-            <div class="key" style="--c:#16a34a"><svg><use href="#i-play"/></svg>Spotify</div>
-            <div class="key" style="--c:#dc2626"><svg><use href="#i-globe"/></svg>YouTube</div>
-            <div class="key" style="--c:#2563eb"><svg><use href="#i-folder"/></svg>Finder</div>
+            <div class="key" style="--c:#64748b"><svg><use href="#i-vup"/></svg>Volume</div>
+            <div class="key" style="--c:#b45309"><svg><use href="#i-sun"/></svg>Brilho</div>
+            <div class="key" style="--c:#7c3aed"><svg><use href="#i-eq"/></svg>Graves</div>
           </div>
         </article>
 
         <article class="card glass span-2">
-          <h3>Atalhos de teclado</h3>
-          <p>Carrega em Gravar, faz o atalho no teclado e fica guardado num botão. No Windows e no Linux, ⌘ passa a Ctrl.</p>
-          <div class="demo keys-demo"><kbd>⌘</kbd><kbd>⇧</kbd><kbd>4</kbd><span>captura de ecrã</span></div>
+          <h3>Canais em direto</h3>
+          <p>Guarda os teus canais do YouTube, Twitch e Kick. Cada botão fica com a foto do canal e mostra "AO VIVO" quando está a transmitir.</p>
+          <div class="demo tile-row">
+            <div class="key on-live" style="--c:#9146ff"><svg><use href="#i-live"/></svg>Twitch</div>
+            <div class="key" style="--c:#16a34a"><svg><use href="#i-live"/></svg>Kick</div>
+          </div>
         </article>
 
         <article class="card glass span-2">
-          <h3>Estados ao vivo</h3>
-          <p>Os botões mostram se estão ativos: mute, microfone, modo escuro ou qualquer coisa que um script consiga verificar.</p>
+          <h3>Apps, sites e atalhos</h3>
+          <p>Abre qualquer app do Menu Iniciar ou site, com o ícone oficial. Para atalhos, carrega em Gravar e faz o atalho no teclado.</p>
+          <div class="demo keys-demo"><kbd>Ctrl</kbd><kbd>Shift</kbd><kbd>M</kbd><span>mute no Discord</span></div>
+        </article>
+
+        <article class="card glass span-3">
+          <h3>Macros, toque longo e dois toques</h3>
+          <p>Um botão pode fazer várias coisas seguidas, ou outra ação quando o manténs carregado ou tocas duas vezes. Também pode pedir confirmação antes.</p>
           <div class="demo tile-row">
-            <div class="key on-on" style="--c:#1e293b"><svg><use href="#i-moon"/></svg>Escuro</div>
+            <div class="key" style="--c:#0f766e"><svg><use href="#i-rec"/></svg>Gravar</div>
+            <div class="key" style="--c:#5865f2"><svg><use href="#i-chat"/></svg>Discord</div>
+            <div class="key" style="--c:#b45309"><svg><use href="#i-lock"/></svg>Bloquear</div>
+          </div>
+        </article>
+
+        <article class="card glass span-3">
+          <h3>Informação nos botões</h3>
+          <p>Hora, data, volume, bateria, uso do CPU ou o tempo na tua cidade, sempre atualizados por baixo do nome do botão. As páginas também mudam sozinhas quando trocas de app no PC.</p>
+          <div class="demo tile-row">
+            <div class="key" style="--c:#0284c7"><svg><use href="#i-sun"/></svg>☀️ 18°</div>
+            <div class="key" style="--c:#334155"><svg><use href="#i-term"/></svg>CPU 12%</div>
             <div class="key on-mute" style="--c:#64748b"><svg><use href="#i-mute"/></svg>Mute</div>
           </div>
         </article>
@@ -483,16 +514,16 @@
       <div class="section-head">
         <span class="eyebrow">Como funciona</span>
         <h2>Pronto em menos de um minuto.</h2>
-        <p class="lede">O programa corre no computador e o telemóvel liga-se a ele pela tua rede Wi-Fi.</p>
+        <p class="lede">O programa corre no PC e o telemóvel liga-se a ele pela tua rede Wi-Fi.</p>
       </div>
       <div class="steps">
         <div class="step glass">
           <h3>Descarrega e abre</h3>
-          <p>No Mac, arrasta a app para Aplicações; no Windows e no Linux, abre o programa. Sem instalação: o editor aparece no browser.</p>
+          <p>Extrai o .zip para uma pasta (por exemplo Documentos) e abre o PhoneDeck. Sem instalação: fica um ícone junto ao relógio e o editor abre numa janela.</p>
         </div>
         <div class="step glass">
-          <h3>Lê o código QR</h3>
-          <p>No editor carrega em "Ligar telemóvel" e aponta a câmara ao código (ou escreve os 6 dígitos). Adiciona ao ecrã principal e passa a abrir como uma app.</p>
+          <h3>Liga o telemóvel</h3>
+          <p>No editor carrega em "Ligar telemóvel". No Android, a app PhoneDeck lê o código QR e encontra o PC sozinha. No iPhone, aponta a câmara ao código e adiciona a página ao ecrã principal.</p>
           <svg class="qr" viewBox="0 0 21 21" aria-hidden="true" shape-rendering="crispEdges">
             <path fill="#0a0a1f" d="M0 0h7v7H0zm1 1v5h5V1zm1 1h3v3H2zm12-2h7v7h-7zm1 1v5h5V1zm1 1h3v3h-3zM0 14h7v7H0zm1 1v5h5v-5zm1 1h3v3H2zM8 0h1v2H8zm2 0h2v1h-2zm1 2h1v2h-1zM8 4h2v2H8zm3 1h2v1h-2zm-3 3h3v1H8zm4 0h1v3h-1zM0 8h2v1H0zm3 0h3v1H3zm11 0h2v1h-2zm3 0h4v1h-4zM1 10h2v2H1zm4 0h3v1H5zm4 0h2v2H9zm5 0h1v2h-1zm2 0h3v1h-3zm4 1h1v3h-1zM6 12h2v1H6zm6 0h2v2h-2zm4 1h2v2h-2zm-8 1h3v1H8zm2 2h2v2h-2zm3 0h1v3h-1zm2 1h3v1h-3zm4 1h2v3h-2zM8 18h2v3H8zm6 1h3v2h-3z"/>
           </svg>
@@ -510,13 +541,14 @@
     <div class="wrap editor-grid">
       <div>
         <span class="eyebrow">Editor</span>
-        <h2 style="margin-top:14px">Monta a tua consola no computador.</h2>
+        <h2 style="margin-top:14px">Monta a tua consola no PC.</h2>
         <ul class="ticks">
-          <li><svg><use href="#i-check"/></svg><span><b>Arrasta para ordenar</b> botões e páginas.</span></li>
-          <li><svg><use href="#i-check"/></svg><span><b>Ícones oficiais automáticos</b>, emojis ou uma imagem tua.</span></li>
-          <li><svg><use href="#i-check"/></svg><span><b>Testa antes de guardar</b>: o botão corre no computador na hora.</span></li>
-          <li><svg><use href="#i-check"/></svg><span><b>Pré-visualização</b> no tamanho de um telemóvel, na vertical e na horizontal.</span></li>
-          <li><svg><use href="#i-check"/></svg><span><b>Só abre no próprio computador</b>: do telemóvel só se carrega nos botões.</span></li>
+          <li><svg><use href="#i-check"/></svg><span><b>Páginas prontas</b> para Spotify, YouTube, Twitch, Kick, Discord, OBS, Teams, Zoom e mais.</span></li>
+          <li><svg><use href="#i-check"/></svg><span><b>Arrasta para ordenar</b> botões e páginas, e cria subpáginas como pastas.</span></li>
+          <li><svg><use href="#i-check"/></svg><span><b>Ícones oficiais automáticos</b>, emojis, animações ou uma imagem tua.</span></li>
+          <li><svg><use href="#i-check"/></svg><span><b>Testa antes de guardar</b>: o botão corre no PC na hora.</span></li>
+          <li><svg><use href="#i-check"/></svg><span><b>Pré-visualização</b> no tamanho real do telemóvel, na vertical e na horizontal.</span></li>
+          <li><svg><use href="#i-check"/></svg><span><b>Só abre no próprio PC</b>: do telemóvel só se carrega nos botões.</span></li>
         </ul>
       </div>
       <div class="window glass" aria-label="Ilustração do editor">
@@ -554,26 +586,29 @@
     </div>
   </section>
 
-  <!-- ======================= SISTEMAS ======================= -->
-  <section id="sistemas">
+  <!-- ======================= WINDOWS ======================= -->
+  <section id="windows">
     <div class="wrap">
       <div class="section-head">
-        <span class="eyebrow">Sistemas</span>
-        <h2>macOS, Windows e Linux.</h2>
-        <p class="lede">O telemóvel funciona igual em iPhone e Android. No computador, isto é o que cada sistema já faz nesta versão.</p>
+        <span class="eyebrow">Windows</span>
+        <h2>Feito para o Windows 10 e 11.</h2>
+        <p class="lede">O PhoneDeck usa o que o Windows já tem. O telemóvel funciona igual em Android e iPhone.</p>
       </div>
       <div class="table-wrap glass">
         <table>
           <thead>
-            <tr><th>Funcionalidade</th><th>macOS</th><th>Windows <span class="beta">BETA</span></th><th>Linux <span class="beta">BETA</span></th></tr>
+            <tr><th>Funcionalidade</th><th>Como funciona no Windows</th></tr>
           </thead>
           <tbody>
-            <tr><td>Volume, mute e microfone</td><td><span class="y">✓</span></td><td><span class="y">✓</span></td><td><span class="y">✓</span>com pactl</td></tr>
-            <tr><td>Play, pausa, seguinte, anterior</td><td><span class="y">✓</span></td><td><span class="y">✓</span>teclas de media</td><td><span class="y">✓</span>com playerctl</td></tr>
-            <tr><td>Barra de tempo do que está a tocar</td><td><span class="y">✓</span>apps e vídeos no browser</td><td><span class="n">Em breve</span></td><td><span class="y">✓</span>com playerctl</td></tr>
-            <tr><td>Abrir apps e sites</td><td><span class="y">✓</span></td><td><span class="y">✓</span>Menu Iniciar</td><td><span class="y">✓</span></td></tr>
-            <tr><td>Atalhos de teclado</td><td><span class="y">✓</span></td><td><span class="y">✓</span></td><td><span class="y">✓</span>com xdotool</td></tr>
-            <tr><td>Comandos e scripts</td><td><span class="y">✓</span>Terminal e AppleScript</td><td><span class="y">✓</span>Linha de comandos</td><td><span class="y">✓</span>Terminal</td></tr>
+            <tr><td>Ícone junto ao relógio</td><td><span class="y">✓</span>Abre o editor, liga telemóveis e sai, sem janelas abertas</td></tr>
+            <tr><td>Arrancar com o Windows</td><td><span class="y">✓</span>Liga-se sozinho em segundo plano quando inicias sessão</td></tr>
+            <tr><td>Volume, mute e microfone</td><td><span class="y">✓</span>Escolhes o microfone de cada botão</td></tr>
+            <tr><td>Barra de tempo e controlos de media</td><td><span class="y">✓</span>Os mesmos controlos de media do painel do volume</td></tr>
+            <tr><td>Abrir apps e sites</td><td><span class="y">✓</span>Qualquer app do Menu Iniciar, com o ícone dela</td></tr>
+            <tr><td>Brilho</td><td><span class="y">✓</span>Monitores externos (DDC/CI) e ecrã do portátil</td></tr>
+            <tr><td>Equalizador</td><td><span class="y">✓</span>Com o Equalizer APO (grátis)</td></tr>
+            <tr><td>Comandos</td><td><span class="y">✓</span>Linha de comandos: desligar o ecrã, suspender, bloquear…</td></tr>
+            <tr><td>Atualizações</td><td><span class="y">✓</span>Ao abrir, avisa quando há uma versão nova e atualiza com um clique</td></tr>
           </tbody>
         </table>
       </div>
@@ -585,13 +620,14 @@
     <div class="wrap privacy">
       <div class="section-head" style="margin:0">
         <span class="eyebrow">Privacidade</span>
-        <h2>Fica entre o teu telemóvel e o teu computador.</h2>
-        <p class="lede">Não há contas, anúncios nem recolha de dados. O PhoneDeck não precisa de internet para funcionar.</p>
+        <h2>Fica entre o teu telemóvel e o teu PC.</h2>
+        <p class="lede">Não há contas, anúncios nem recolha de dados. O PhoneDeck não precisa de internet para funcionar: só a usa para procurar versões novas e, se as usares, para ícones, meteorologia e canais em direto.</p>
       </div>
       <div class="p-list">
         <div class="p-item glass"><svg><use href="#i-home"/></svg><h3>Na tua rede</h3><p>O telemóvel fala diretamente com o computador pelo Wi-Fi de casa ou do escritório. Nada passa por servidores de terceiros.</p></div>
         <div class="p-item glass"><svg><use href="#i-key"/></svg><h3>Cada telemóvel com a sua chave</h3><p>Ligas um telemóvel com um código que vale 5 minutos e uma só vez. Ele recebe uma chave própria, e no editor vês todos os telemóveis ligados e desligas qualquer um.</p></div>
-        <div class="p-item glass"><svg><use href="#i-shield"/></svg><h3>Editor fechado ao exterior</h3><p>Os botões só se criam e alteram no próprio computador. O telemóvel apenas os usa.</p></div>
+        <div class="p-item glass"><svg><use href="#i-shield"/></svg><h3>Editor fechado ao exterior</h3><p>Os botões só se criam e alteram no próprio PC. O telemóvel apenas os usa.</p></div>
+        <div class="p-item glass"><svg><use href="#i-update"/></svg><h3>Atualizações assinadas</h3><p>Cada versão nova é assinada. O PhoneDeck só a instala se a assinatura e a impressão digital do ficheiro baterem certo.</p></div>
       </div>
     </div>
   </section>
@@ -605,19 +641,23 @@
       </div>
       <div class="faq">
         <details class="glass"><summary>Preciso de instalar uma app no telemóvel?</summary>
-          <p>Não. Abres o endereço do código QR no browser do telemóvel (Safari, Chrome…) e escolhes "Adicionar ao ecrã principal". A partir daí abre em ecrã inteiro, como uma app.</p></details>
+          <p>No Android, recomendamos a app PhoneDeck (descarrega-a abaixo): lê o código QR, encontra o PC sozinha e mantém o ecrã ligado. Também podes usar só o browser, tal como no iPhone: abres o endereço do código QR no Safari ou no Chrome e escolhes "Adicionar ao ecrã principal". A partir daí abre em ecrã inteiro, como uma app.</p></details>
+        <details class="glass"><summary>Como recebo as versões novas?</summary>
+          <p>Quando sai uma versão nova, o PhoneDeck mostra um aviso ao abrir e pergunta se queres atualizar já. Se disseres que sim, descarrega-a, confirma a assinatura e reinicia sozinho, com os mesmos botões e telemóveis. Se disseres que não, volta a perguntar da próxima vez que abrir. Também podes atualizar no menu do ícone junto ao relógio.</p></details>
+        <details class="glass"><summary>E se o endereço do PC mudar?</summary>
+          <p>O PhoneDeck usa o nome do PC na rede (por exemplo o-meu-pc.local), que não muda quando o router lhe dá outro endereço. Se a ligação cair, a app mostra "A procurar o computador…" e volta sozinha.</p></details>
         <details class="glass"><summary>Funciona fora de casa?</summary>
-          <p>Nesta versão, o telemóvel e o computador têm de estar na mesma rede Wi-Fi. O acesso remoto seguro está nos planos.</p></details>
-        <details class="glass"><summary>Tenho de abrir o PhoneDeck sempre que ligo o computador?</summary>
-          <p>Não. Depois da primeira vez, o PhoneDeck arranca sozinho em segundo plano quando inicias sessão. Se preferires abrir à mão, desliga essa opção no editor, na secção "Computador".</p></details>
-        <details class="glass"><summary>Porque aparece um aviso de segurança ao abrir?</summary>
-          <p>O PhoneDeck ainda não tem assinatura digital da Apple nem da Microsoft, por isso o sistema pede confirmação na primeira vez. No Mac: depois do aviso, abre Definições do Sistema → Privacidade e Segurança e carrega em "Abrir mesmo assim" (no macOS 14 ou anterior basta botão direito → Abrir). No Windows: Mais informações → Executar mesmo assim. As instruções vêm no ficheiro LEIA-ME.</p></details>
+          <p>Nesta versão, o telemóvel e o PC têm de estar na mesma rede Wi-Fi. O acesso remoto seguro está nos planos.</p></details>
+        <details class="glass"><summary>Tenho de abrir o PhoneDeck sempre que ligo o PC?</summary>
+          <p>Não. Depois da primeira vez, o PhoneDeck arranca sozinho em segundo plano quando inicias sessão. Se preferires abrir à mão, desliga "Arrancar com o Windows" no menu do ícone junto ao relógio.</p></details>
+        <details class="glass"><summary>Porque aparece "O Windows protegeu o PC"?</summary>
+          <p>O PhoneDeck ainda não tem assinatura digital da Microsoft, por isso o Windows pede confirmação na primeira vez: carrega em Mais informações → Executar mesmo assim. Quando a Firewall perguntar, permite em redes privadas, para o telemóvel conseguir ligar-se.</p></details>
         <details class="glass"><summary>É grátis?</summary>
           <p>Sim. Esta versão é gratuita.</p></details>
-        <details class="glass"><summary>Posso levar os meus botões para outro computador?</summary>
-          <p>Sim. Os botões, as páginas e o tema ficam num ficheiro, o config.json, na pasta do programa. Copia-o para a pasta do PhoneDeck no outro computador.</p></details>
+        <details class="glass"><summary>Posso levar os meus botões para outro PC?</summary>
+          <p>Sim. Os botões, as páginas e o tema ficam num ficheiro, o config.json, na pasta do programa. Copia-o para a pasta do PhoneDeck no outro PC antes de o abrires.</p></details>
         <details class="glass"><summary>Que telemóveis funcionam?</summary>
-          <p>iPhone e Android com um browser atual. A vibração ao tocar nos botões funciona no Android.</p></details>
+          <p>Android (com a app ou com o browser) e iPhone com um browser atual. A vibração ao tocar nos botões funciona no Android.</p></details>
       </div>
     </div>
   </section>
@@ -626,32 +666,23 @@
   <section id="download">
     <div class="wrap">
       <div class="section-head">
-        <span class="eyebrow">Download · v0.2.0</span>
+        <span class="eyebrow">Download · v0.2.1</span>
         <h2>Descarrega o PhoneDeck</h2>
-        <p class="lede">Extrai o ficheiro, abre o programa e segue o LEIA-ME que vem dentro.</p>
+        <p class="lede">Extrai o ficheiro, abre o programa e segue o LEIA-ME que vem dentro. Daqui para a frente, o PhoneDeck avisa-te quando houver uma versão nova.</p>
       </div>
-      <p class="mobile-note glass" id="mobileNote">Estás no telemóvel. O PhoneDeck instala-se no <b>computador</b>: abre esta página lá. Depois, o telemóvel liga-se pelo código QR.</p>
+      <p class="mobile-note glass" id="mobileNote">Estás no telemóvel. O programa instala-se no <b>PC</b>: abre esta página lá. No Android, descarrega aqui a app para o telemóvel.</p>
       <div class="dl">
-        <article class="dl-card glass" data-os="mac">
-          <div class="os"><svg aria-hidden="true"><use href="#os-mac"/></svg><h3>macOS</h3></div>
-          <p>App para Mac com Apple Silicon ou Intel, macOS 11 ou mais recente. Arrasta-a para Aplicações e abre.</p>
-          <span class="meta">PhoneDeck-macOS.zip · 7,2 MB</span>
-          <div class="btns"><a class="btn primary" href="https://github.com/strudall/phonedeck-app/releases/latest/download/PhoneDeck-macOS.zip"><svg aria-hidden="true"><use href="#i-down"/></svg>Descarregar</a></div>
+        <article class="dl-card glass match" data-os="win">
+          <div class="os"><svg aria-hidden="true"><use href="#os-win"/></svg><h3>Windows</h3></div>
+          <p>O programa para o PC. Windows 10 e 11 de 64 bits. Extrai o .zip para uma pasta e abre o PhoneDeck-Windows.exe.</p>
+          <span class="meta" id="winMeta">PhoneDeck-Windows.zip · 3,6 MB</span>
+          <div class="btns"><a class="btn primary" href="https://github.com/strudall/phonedeck-app/releases/latest/download/PhoneDeck-Windows.zip"><svg aria-hidden="true"><use href="#i-down"/></svg>Descarregar para Windows</a></div>
         </article>
-        <article class="dl-card glass" data-os="win">
-          <div class="os"><svg aria-hidden="true"><use href="#os-win"/></svg><h3>Windows <span class="beta">BETA</span></h3></div>
-          <p>Para Windows 10 e 11 de 64 bits.</p>
-          <span class="meta">PhoneDeck-Windows.zip · 3,4 MB</span>
-          <div class="btns"><a class="btn primary" href="https://github.com/strudall/phonedeck-app/releases/latest/download/PhoneDeck-Windows.zip"><svg aria-hidden="true"><use href="#i-down"/></svg>Descarregar</a></div>
-        </article>
-        <article class="dl-card glass" data-os="linux">
-          <div class="os"><svg aria-hidden="true"><use href="#os-linux"/></svg><h3>Linux <span class="beta">BETA</span></h3></div>
-          <p>PC (x64) ou ARM, como o Raspberry Pi. Usa pactl, playerctl e xdotool.</p>
-          <span class="meta">.tar.gz · 2,9–3,3 MB</span>
-          <div class="btns">
-            <a class="btn primary" href="https://github.com/strudall/phonedeck-app/releases/latest/download/PhoneDeck-Linux-x64.tar.gz"><svg aria-hidden="true"><use href="#i-down"/></svg>x64</a>
-            <a class="btn" href="https://github.com/strudall/phonedeck-app/releases/latest/download/PhoneDeck-Linux-arm64.tar.gz">ARM64</a>
-          </div>
+        <article class="dl-card glass" data-os="android">
+          <div class="os"><svg aria-hidden="true"><use href="#os-android"/></svg><h3>App Android</h3></div>
+          <p>Opcional, para o telemóvel: lê o código QR, encontra o PC sozinha e mantém o ecrã ligado. Ao instalar, o Android pede para permitir apps desta origem. No iPhone usa o browser.</p>
+          <span class="meta" id="apkMeta">PhoneDeck-Android.apk · 2,8 MB</span>
+          <div class="btns"><a class="btn" href="https://github.com/strudall/phonedeck-app/releases/latest/download/PhoneDeck-Android.apk"><svg aria-hidden="true"><use href="#i-down"/></svg>Descarregar para Android</a></div>
         </article>
       </div>
       <div class="dl-foot">
@@ -665,28 +696,29 @@
 <footer>
   <div class="wrap">
     <span class="brand"><img src="icon.svg" alt="" width="22" height="22" style="border-radius:6px">PhoneDeck</span>
-    <span>Versão 0.2.0</span>
+    <span>Versão 0.2.1 · para Windows</span>
     <span>Ícones de marcas: <a href="https://simpleicons.org">Simple Icons</a>. As marcas pertencem aos respetivos donos.</span>
   </div>
 </footer>
 
 <script>
-// ---------- Download: deteta o sistema de quem visita ----------
+// ---------- Download: no PC vai direto ao .zip; no Android destaca a app ----------
 (() => {
-  const ua = navigator.userAgent, plat = (navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || '';
-  const mobile = /Android|iPhone|iPad|iPod/i.test(ua) || (/Mac/.test(plat) && navigator.maxTouchPoints > 1);
-  const os = mobile ? null : /Win/i.test(plat) ? 'win' : /Mac/i.test(plat) ? 'mac' : /Linux|X11/i.test(plat + ua) ? 'linux' : null;
-  const info = { mac: ['macOS', '7,2 MB'], win: ['Windows', '3,4 MB'], linux: ['Linux', '3,3 MB'] };
+  const ua = navigator.userAgent;
+  const android = /Android/i.test(ua), mobile = android || /iPhone|iPad|iPod/i.test(ua) || (/Mac/.test(navigator.platform) && navigator.maxTouchPoints > 1);
   if (mobile) document.getElementById('mobileNote').classList.add('show');
-  if (!os) return;
-  const card = document.querySelector(`.dl-card[data-os="${os}"]`);
-  card.classList.add('match');
-  card.parentNode.prepend(card);                     // o teu sistema aparece primeiro
-  const link = card.querySelector('.btn.primary').href;
+  if (android) {
+    const win = document.querySelector('.dl-card[data-os="win"]'), apk = document.querySelector('.dl-card[data-os="android"]');
+    win.classList.remove('match'); apk.classList.add('match');
+    apk.querySelector('.btn').classList.add('primary'); win.querySelector('.btn').classList.remove('primary');
+    apk.parentNode.prepend(apk);
+    return;
+  }
+  if (mobile) return;
   const hero = document.getElementById('heroDl');
-  hero.href = link;
-  document.getElementById('heroDlText').textContent = 'Descarregar para ' + info[os][0];
-  document.getElementById('heroMeta').textContent = `v0.2.0 · ${info[os][1]} · sem instalar nada`;
+  hero.href = document.querySelector('.dl-card[data-os="win"] .btn').href;
+  document.getElementById('heroDlText').textContent = 'Descarregar para Windows';
+  document.getElementById('heroMeta').textContent = 'v0.2.1 · ' + document.getElementById('winMeta').textContent.split('· ')[1] + ' · sem instalação';
 })();
 
 // ---------- Telemóvel interativo ----------
@@ -698,11 +730,12 @@
       { i: 'mute', l: 'Mute', c: '#64748b', a: 'mute' }, { i: 'vup', l: 'Vol +', c: '#64748b', a: 'vup' },
       { i: 'mic', l: 'Microfone', c: '#0f766e', a: 'mic' } ] },
     { name: 'Apps', keys: [
-      { i: 'globe', l: 'Safari', c: '#0ea5e9' }, { i: 'play', l: 'Spotify', c: '#16a34a' }, { i: 'note', l: 'Notas', c: '#ca8a04' },
-      { i: 'folder', l: 'Finder', c: '#2563eb' }, { i: 'term', l: 'Terminal', c: '#334155' }, { i: 'mail', l: 'Mail', c: '#0284c7' },
-      { i: 'globe', l: 'YouTube', c: '#dc2626' } ] },
+      { i: 'globe', l: 'Chrome', c: '#0ea5e9' }, { i: 'play', l: 'Spotify', c: '#16a34a' }, { i: 'chat', l: 'Discord', c: '#5865f2' },
+      { i: 'folder', l: 'Explorador', c: '#ca8a04' }, { i: 'rec', l: 'OBS', c: '#334155' }, { i: 'mail', l: 'Outlook', c: '#0284c7' },
+      { i: 'live', l: 'Twitch', c: '#9146ff' } ] },
     { name: 'Sistema', keys: [
-      { i: 'moon', l: 'Modo escuro', c: '#1e293b', a: 'dark' }, { i: 'cam', l: 'Captura', c: '#0d9488' }, { i: 'lock', l: 'Bloquear', c: '#b45309' } ] },
+      { i: 'moon', l: 'Modo escuro', c: '#1e293b', a: 'dark' }, { i: 'cam', l: 'Captura', c: '#0d9488' }, { i: 'lock', l: 'Bloquear', c: '#b45309' },
+      { i: 'sun', l: 'Brilho', c: '#b45309' }, { i: 'term', l: 'Suspender', c: '#334155' } ] },
   ];
   const tracks = [['Noite de Verão', 'Os Azuis', 268], ['Maré Alta', 'Clara Lume', 214], ['Luzes da Cidade', 'Norte Sul', 301]];
   const st = { page: 0, vol: 50, muted: false, mic: false, dark: true, playing: true, t: 0, pos: 83 };
