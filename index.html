@@ -108,21 +108,37 @@
     box-shadow: 0 0 0 9px #101221, 0 0 0 10px rgba(255,255,255,.14), 0 50px 90px -30px rgba(0,0,0,.85), 0 0 120px -30px rgba(167,139,250,.55); }
   .ph-status { display: flex; justify-content: space-between; align-items: center; padding: 0 14px 8px; font: 600 11px var(--body); color: rgba(255,255,255,.8); }
   .ph-status i { width: 86px; height: 22px; border-radius: 12px; background: #000; }
-  .ph-head { display: flex; justify-content: space-between; align-items: flex-start; padding: 2px 4px 10px; }
-  .ph-head b { display: block; font: 700 19px var(--body); letter-spacing: -.02em; }
-  .ph-head small { color: var(--muted); font-size: 11px; font-weight: 600; }
-  .ph-vol { display: flex; align-items: center; gap: 6px; padding: 5px 9px; border-radius: 999px; font: 600 10.5px var(--mono); color: var(--muted); }
-  .ph-vol span { width: 34px; height: 4px; border-radius: 2px; background: rgba(255,255,255,.16); overflow: hidden; }
-  .ph-vol span i { display: block; height: 100%; width: 50%; background: var(--ink); transition: width .25s; }
-  .ph-vol.muted span i { background: #f87171; }
-  .ph-now { border-radius: 18px; padding: 10px 12px 8px; margin-bottom: 10px; }
+  /* Igual ao ecrã da app (index.html do programa): nome ao centro, cartão "A tocar", botões em vidro e pontos. */
+  .ph-head { text-align: center; padding: 0 0 10px; }
+  .ph-head b { display: block; font: 800 19px/1.15 var(--body); letter-spacing: -.02em; }
+  .ph-head small { display: block; color: var(--muted); font-size: 11px; font-weight: 600; margin-top: 1px; }
+  .ph-now { border-radius: 18px; padding: 10px 12px 4px; margin-bottom: 11px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.12), 0 12px 30px -16px rgba(0,0,0,.6); }
+  .ph-now .hd { display: flex; align-items: center; gap: 10px; min-width: 0; }
+  .ph-now .art { flex: none; width: 40px; height: 40px; border-radius: 10px; display: grid; place-items: center; font-size: 20px;
+    background: linear-gradient(135deg, #f59e0b, #db2777 55%, #7c3aed); box-shadow: 0 6px 16px -6px rgba(0,0,0,.6); }
+  .ph-now .tx { flex: 1; min-width: 0; }
   .ph-now b { display: block; font-size: 12.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .ph-now small { color: var(--muted); font-size: 10.5px; }
-  .ph-bar { display: flex; align-items: center; gap: 8px; margin-top: 6px; font: 500 9.5px var(--mono); color: var(--muted); }
+  .ph-now small { display: block; color: var(--muted); font-size: 10px; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ph-bar { display: flex; align-items: center; gap: 8px; margin-top: 4px; height: 22px; font: 500 9.5px var(--body); font-variant-numeric: tabular-nums; color: var(--muted); }
   .ph-bar span { flex: 1; height: 4px; border-radius: 2px; background: rgba(255,255,255,.16); position: relative; }
   .ph-bar span i { position: absolute; inset: 0 auto 0 0; width: 31%; border-radius: 2px; background: var(--violet); }
-  .ph-bar span i::after { content: ""; position: absolute; right: -6px; top: -4px; width: 12px; height: 12px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 3px rgba(167,139,250,.35); }
-  .ph-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; }
+  .ph-bar span i::after { content: ""; position: absolute; right: -6px; top: -4px; width: 12px; height: 12px; border-radius: 50%; background: #fff;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--violet) 35%, transparent), 0 2px 6px rgba(0,0,0,.4); }
+  .ph-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+  .ph-grid .key { border-radius: 19px; gap: 4px; font: 650 10px var(--body); }
+  .key .ic { font-size: 25px; line-height: 1; filter: drop-shadow(0 2px 4px rgba(0,0,0,.25)); position: relative; }
+  .key .lb { text-align: center; line-height: 1.15; text-shadow: 0 1px 2px rgba(0,0,0,.35); max-width: 100%; position: relative; }
+  .key .lv { font-size: 10px; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1; padding: 2px 6px; border-radius: 999px;
+    background: rgba(0,0,0,.22); white-space: nowrap; position: relative; }
+  .key .fo { position: absolute; top: 4px; right: 7px; font-size: 12px; font-weight: 800; line-height: 1; opacity: .6; }
+  .key .fill { position: absolute; left: 0; right: 0; bottom: 0; height: var(--v, 0%); background: linear-gradient(180deg, rgba(255,255,255,.42), rgba(255,255,255,.2)); transition: height .2s; }
+  .key.on-mute .ic { opacity: .6; }
+  .key.on-mute .ic::after { content: ""; position: absolute; left: 50%; top: 50%; width: 1.3em; height: 3px; margin: -1.5px 0 0 -.65em; background: #fecaca; border-radius: 2px; transform: rotate(-40deg); }
+  .ph-dots { margin-top: auto; display: flex; justify-content: center; gap: 4px; padding: 8px 0 0; }
+  .ph-dots button { all: unset; width: 22px; height: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  .ph-dots i { width: 7px; height: 7px; border-radius: 4px; background: rgba(255,255,255,.3); transition: width .25s, background .25s; }
+  .ph-dots button.on i { width: 20px; background: var(--violet); }
   .key { --c: #334155; aspect-ratio: 1; min-width: 0; position: relative; overflow: hidden; border-radius: 17px; border: 1px solid rgba(255,255,255,.18); cursor: pointer;
     background: linear-gradient(180deg, rgba(255,255,255,.24), rgba(255,255,255,0) 44%),
                 linear-gradient(150deg, color-mix(in srgb, var(--c) 88%, #fff 12%), color-mix(in srgb, var(--c) 58%, transparent));
@@ -137,12 +153,6 @@
   .key.on-on { box-shadow: inset 0 0 0 2px var(--violet), 0 0 22px -4px var(--violet); }
   .key.on-on::before { content: "ATIVO"; position: absolute; top: 6px; right: 6px; font: 800 7.5px var(--body); letter-spacing: .06em; padding: 2px 4px; border-radius: 4px; background: var(--violet); color: #120a2a; }
   .key.on-live::before { content: "AO VIVO"; position: absolute; top: 6px; right: 6px; font: 800 7.5px var(--body); letter-spacing: .06em; padding: 2px 4px; border-radius: 4px; background: #ef4444; }
-  .ph-nav { margin-top: auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; padding: 4px; border-radius: 18px; position: relative; }
-  .ph-nav button { all: unset; position: relative; z-index: 1; text-align: center; padding: 8px 2px; font: 650 11px var(--body); color: var(--muted); cursor: pointer; border-radius: 14px; }
-  .ph-nav button.active { color: var(--ink); }
-  .ph-nav .pill { position: absolute; top: 4px; bottom: 4px; left: 4px; width: calc((100% - 8px) / 3); border-radius: 14px;
-    background: linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,.04)), rgba(167,139,250,.32);
-    border: 1px solid rgba(167,139,250,.45); transition: transform .38s cubic-bezier(.3,1.3,.5,1); }
   .ph-home { width: 110px; height: 4px; border-radius: 2px; background: rgba(255,255,255,.35); margin: 9px auto 0; }
   .stage-hint { color: var(--muted); font-size: 13.5px; display: flex; align-items: center; gap: 8px; }
   .stage-hint kbd { height: 1.7em; font-size: 11px; }
@@ -374,25 +384,23 @@
       <div class="stage">
         <div class="phone" id="demoPhone" aria-label="Demonstração interativa do PhoneDeck">
           <div class="ph-status"><span>9:41</span><i></i><span>5G</span></div>
-          <div class="ph-head">
-            <div><b>PhoneDeck</b><small id="demoPage">Media</small></div>
-            <div class="ph-vol glass" id="demoVol"><span><i></i></span><em id="demoVolTxt" style="font-style:normal">50%</em></div>
-          </div>
+          <div class="ph-head"><b>PhoneDeck</b><small id="demoPage">Media</small></div>
           <div class="ph-now glass" id="demoNow">
-            <b id="demoTitle">Noite de Verão</b>
-            <small id="demoSub">▶︎ · Spotify · Os Azuis</small>
-            <div class="ph-bar"><em style="font-style:normal" id="demoA">1:23</em><span><i id="demoProg"></i></span><em style="font-style:normal">4:28</em></div>
+            <div class="hd">
+              <span class="art" aria-hidden="true">🎵</span>
+              <div class="tx"><b id="demoTitle">Noite de Verão</b><small id="demoSub">▶︎ · Spotify · Os Azuis</small></div>
+            </div>
+            <div class="ph-bar"><em style="font-style:normal" id="demoA">1:23</em><span><i id="demoProg"></i></span><em style="font-style:normal" id="demoB">4:28</em></div>
           </div>
           <div class="ph-grid" id="demoGrid"></div>
-          <div class="ph-nav glass" id="demoNav" role="tablist" aria-label="Páginas">
-            <i class="pill" id="demoPill"></i>
-            <button class="active" role="tab" data-p="0">Media</button>
-            <button role="tab" data-p="1">Apps</button>
-            <button role="tab" data-p="2">Sistema</button>
+          <div class="ph-dots" id="demoDots" role="tablist" aria-label="Páginas">
+            <button class="on" role="tab" aria-label="Media"><i></i></button>
+            <button role="tab" aria-label="Apps"><i></i></button>
+            <button role="tab" aria-label="Sistema"><i></i></button>
           </div>
           <div class="ph-home"></div>
         </div>
-        <p class="stage-hint">Experimenta: toca nos botões e nos separadores</p>
+        <p class="stage-hint">Experimenta: toca nos botões e nos pontos, ou desliza para o lado</p>
       </div>
     </div>
   </section>
@@ -498,9 +506,9 @@
           <h3>Feito para o polegar</h3>
           <p>Gestos que se usam sem olhar, na vertical ou na horizontal.</p>
           <div class="demo gesture">
-            <div><svg><use href="#i-swipe"/></svg>Desliza o ecrã para mudar de página</div>
-            <div><svg><use href="#i-drag"/></svg>Arrasta o dedo na barra para escolher a página</div>
-            <div><svg><use href="#i-hide"/></svg>A barra recolhe sozinha ao fim de 5 segundos</div>
+            <div><svg><use href="#i-swipe"/></svg>Desliza o ecrã para mudar de página, ou toca nos pontos</div>
+            <div><svg><use href="#i-folder"/></svg>Pastas com subpáginas: ‹ volta atrás, manter carregado volta ao início</div>
+            <div><svg><use href="#i-drag"/></svg>Arrasta o dedo nos deslizadores para o volume e o brilho</div>
             <div><svg><use href="#i-rotate"/></svg>Deitado, os botões reorganizam-se para caber tudo</div>
           </div>
         </article>
@@ -723,40 +731,48 @@
 
 // ---------- Telemóvel interativo ----------
 (() => {
+  // Páginas como as do programa: e = símbolo, l = nome, c = cor, a = ação na demonstração,
+  // fo = abre uma subpágina (seta no canto), lv = valor ao vivo, sl = deslizador.
   const pages = [
-    { name: 'Media', keys: [
-      { i: 'prev', l: 'Anterior', c: '#3b82f6', a: 'prev' }, { i: 'play', l: 'Play/Pausa', c: '#22c55e', a: 'play' },
-      { i: 'next', l: 'Seguinte', c: '#3b82f6', a: 'next' }, { i: 'vdown', l: 'Vol −', c: '#64748b', a: 'vdown' },
-      { i: 'mute', l: 'Mute', c: '#64748b', a: 'mute' }, { i: 'vup', l: 'Vol +', c: '#64748b', a: 'vup' },
-      { i: 'mic', l: 'Microfone', c: '#0f766e', a: 'mic' } ] },
+    { name: 'Media', now: true, keys: [
+      { e: '⏮', l: 'Anterior', c: '#3b82f6', a: 'prev' }, { e: '⏯', l: 'Play/Pausa', c: '#22c55e', a: 'play' },
+      { e: '⏭', l: 'Seguinte', c: '#3b82f6', a: 'next' }, { e: '🎙️', l: 'Microfone', c: '#0f766e', a: 'mic' },
+      { e: '🔇', l: 'Mute', c: '#64748b', a: 'mute' }, { e: '🔊', l: 'Volume', c: '#3b82f6', sl: 'vol' },
+      { e: '🔉', l: 'Vol −', c: '#64748b', a: 'vdown' }, { e: '🔊', l: 'Vol +', c: '#64748b', a: 'vup' },
+      { e: '🎧', l: 'Spotify', c: '#16a34a', fo: true } ] },
     { name: 'Apps', keys: [
-      { i: 'globe', l: 'Chrome', c: '#0ea5e9' }, { i: 'play', l: 'Spotify', c: '#16a34a' }, { i: 'chat', l: 'Discord', c: '#5865f2' },
-      { i: 'folder', l: 'Explorador', c: '#ca8a04' }, { i: 'rec', l: 'OBS', c: '#334155' }, { i: 'mail', l: 'Outlook', c: '#0284c7' },
-      { i: 'live', l: 'Twitch', c: '#9146ff' } ] },
+      { e: '▶️', l: 'YouTube', c: '#dc2626', fo: true }, { e: '💜', l: 'Twitch', c: '#9146ff', fo: true, live: true },
+      { e: '🎮', l: 'Discord', c: '#5865f2', fo: true }, { e: '🌐', l: 'Chrome', c: '#0ea5e9' },
+      { e: '📁', l: 'Explorador', c: '#ca8a04' }, { e: '🎬', l: 'OBS', c: '#334155' },
+      { e: '🌤️', l: 'Lisboa', c: '#0284c7', lv: () => '☀️ 18°' }, { e: '📅', l: 'Hoje', c: '#475569', lv: today },
+      { e: '🕒', l: 'Hora', c: '#475569', lv: clock } ] },
     { name: 'Sistema', keys: [
-      { i: 'moon', l: 'Modo escuro', c: '#1e293b', a: 'dark' }, { i: 'cam', l: 'Captura', c: '#0d9488' }, { i: 'lock', l: 'Bloquear', c: '#b45309' },
-      { i: 'sun', l: 'Brilho', c: '#b45309' }, { i: 'term', l: 'Suspender', c: '#334155' } ] },
+      { e: '🌙', l: 'Modo escuro', c: '#1e293b', a: 'dark' }, { e: '☀️', l: 'Brilho', c: '#b45309', sl: 'bright' },
+      { e: '🔒', l: 'Bloquear', c: '#b45309' }, { e: '📸', l: 'Captura', c: '#0d9488' },
+      { e: '💤', l: 'Suspender', c: '#334155' }, { e: '🖥️', l: 'Desligar ecrã', c: '#1e293b' } ] },
   ];
   const tracks = [['Noite de Verão', 'Os Azuis', 268], ['Maré Alta', 'Clara Lume', 214], ['Luzes da Cidade', 'Norte Sul', 301]];
-  const st = { page: 0, vol: 50, muted: false, mic: false, dark: true, playing: true, t: 0, pos: 83 };
+  const st = { page: 0, vol: 54, bright: 70, muted: false, mic: false, dark: true, playing: true, t: 0, pos: 83 };
   const $ = id => document.getElementById(id);
   const fmt = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+  function today() {   // "qua 21 out", como no botão Data da app
+    const d = new Date();
+    return `${['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'][d.getDay()]} ${d.getDate()} ${['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'][d.getMonth()]}`;
+  }
+  function clock() { return new Date().toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' }); }
 
   function renderNow() {
     const [title, artist, dur] = tracks[st.t];
     $('demoTitle').textContent = title;
     $('demoSub').textContent = `${st.playing ? '▶︎' : '⏸'} · Spotify · ${artist}`;
     $('demoA').textContent = fmt(st.pos);
-    $('demoA').nextElementSibling.nextElementSibling.textContent = fmt(dur);
+    $('demoB').textContent = fmt(dur);
     $('demoProg').style.width = (st.pos / dur * 100) + '%';
-    $('demoVol').classList.toggle('muted', st.muted);
-    $('demoVol').querySelector('i').style.width = st.vol + '%';
-    $('demoVolTxt').textContent = st.muted ? 'mute' : st.vol + '%';
   }
   function renderGrid() {
     const p = pages[st.page];
     $('demoPage').textContent = p.name;
-    $('demoNow').style.display = st.page === 0 ? '' : 'none';
+    $('demoNow').style.display = p.now ? '' : 'none';
     $('demoGrid').replaceChildren(...p.keys.map(k => {
       const b = document.createElement('button');
       b.className = 'key';
@@ -764,8 +780,14 @@
       if (k.a === 'mute' && st.muted) b.classList.add('on-mute');
       if (k.a === 'mic' && st.mic) b.classList.add('on-mute');
       if (k.a === 'dark' && st.dark) b.classList.add('on-on');
-      b.innerHTML = `<svg aria-hidden="true"><use href="#i-${k.i}"/></svg>`;
-      b.append(k.l);
+      if (k.live) b.classList.add('on-live');
+      const add = (cls, text) => { const s = document.createElement('span'); s.className = cls; s.textContent = text; b.append(s); return s; };
+      if (k.sl) { b.append(Object.assign(document.createElement('span'), { className: 'fill' })); b.style.setProperty('--v', st[k.sl] + '%'); }
+      add('ic', k.e).setAttribute('aria-hidden', 'true');
+      add('lb', k.l);
+      if (k.sl) add('lv', (k.sl === 'vol' && st.muted ? 'mute' : st[k.sl] + '%'));
+      if (k.lv) add('lv', k.lv());
+      if (k.fo && !k.live) add('fo', '›');
       b.onclick = () => press(k, b);
       return b;
     }));
@@ -775,6 +797,8 @@
     setTimeout(() => el.classList.remove('press'), 160);
     navigator.vibrate?.(12);
     const dur = tracks[st.t][2];
+    if (k.sl === 'vol') st.muted = !st.muted;                             // tocar no deslizador do volume: silencia / repõe
+    if (k.sl === 'bright') st.bright = st.bright >= 100 ? 10 : Math.min(100, st.bright + 30);
     switch (k.a) {
       case 'play': st.playing = !st.playing; break;
       case 'next': st.t = (st.t + 1) % tracks.length; st.pos = 0; st.playing = true; break;
@@ -789,13 +813,20 @@
     renderNow(); renderGrid();
   }
   function setPage(i) {
-    st.page = i;
-    document.querySelectorAll('#demoNav button').forEach((b, j) => b.classList.toggle('active', j === i));
-    $('demoPill').style.transform = `translateX(calc(${i} * (100% + 2px)))`;
+    st.page = (i + pages.length) % pages.length;
+    document.querySelectorAll('#demoDots button').forEach((b, j) => b.classList.toggle('on', j === st.page));
     renderGrid();
   }
-  document.querySelectorAll('#demoNav button').forEach((b, i) => b.onclick = () => setPage(i));
+  document.querySelectorAll('#demoDots button').forEach((b, i) => b.onclick = () => setPage(i));
+  // Deslizar para o lado muda de página, como na app.
+  let x0 = null;
+  $('demoPhone').addEventListener('pointerdown', e => { x0 = e.clientX; });
+  $('demoPhone').addEventListener('pointerup', e => {
+    if (x0 !== null && Math.abs(e.clientX - x0) > 50) setPage(st.page + (e.clientX < x0 ? 1 : -1));
+    x0 = null;
+  });
   setInterval(() => {
+    if (st.page === 1 && clock() !== st.shown) { st.shown = clock(); renderGrid(); }   // hora sempre certa
     if (!st.playing) return;
     st.pos += 1;
     if (st.pos >= tracks[st.t][2]) { st.t = (st.t + 1) % tracks.length; st.pos = 0; }
