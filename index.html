@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="pt">
 <head>
 <meta charset="utf-8">
@@ -112,7 +112,7 @@
   .ph-head { text-align: center; padding: 0 0 10px; }
   .ph-head b { display: block; font: 800 19px/1.15 var(--body); letter-spacing: -.02em; }
   .ph-head small { display: block; color: var(--muted); font-size: 11px; font-weight: 600; margin-top: 1px; }
-  .ph-now { border-radius: 18px; padding: 10px 12px 4px; margin-bottom: 11px;
+  .ph-now { border-radius: 18px; padding: 10px 12px 4px; margin-top: auto;   /* em baixo de tudo, como na app */
     box-shadow: inset 0 1px 0 rgba(255,255,255,.12), 0 12px 30px -16px rgba(0,0,0,.6); }
   .ph-now .hd { display: flex; align-items: center; gap: 10px; min-width: 0; }
   .ph-now .art { flex: none; width: 40px; height: 40px; border-radius: 10px; display: grid; place-items: center; font-size: 20px;
@@ -135,6 +135,7 @@
   .key .fill { position: absolute; left: 0; right: 0; bottom: 0; height: var(--v, 0%); background: linear-gradient(180deg, rgba(255,255,255,.42), rgba(255,255,255,.2)); transition: height .2s; }
   .key.on-mute .ic { opacity: .6; }
   .key.on-mute .ic::after { content: ""; position: absolute; left: 50%; top: 50%; width: 1.3em; height: 3px; margin: -1.5px 0 0 -.65em; background: #fecaca; border-radius: 2px; transform: rotate(-40deg); }
+  .ph-now:not([style*="none"]) + .ph-dots { margin-top: 0; }
   .ph-dots { margin-top: auto; display: flex; justify-content: center; gap: 4px; padding: 8px 0 0; }
   .ph-dots button { all: unset; width: 22px; height: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
   .ph-dots i { width: 7px; height: 7px; border-radius: 4px; background: rgba(255,255,255,.3); transition: width .25s, background .25s; }
@@ -364,7 +365,7 @@
   <section class="hero">
     <div class="wrap hero-grid">
       <div>
-        <span class="chip glass"><b>v0.2.1</b> Grátis · Windows 10 e 11</span>
+        <span class="chip glass"><b>v0.2.2</b> Grátis · Windows 10 e 11</span>
         <h1>O teu PC, <em>num toque.</em></h1>
         <p class="lede">O PhoneDeck transforma o telemóvel numa consola de botões para o Windows. Música, volume, microfone, apps, atalhos e os teus streams ficam ao alcance do polegar. Sem contas, sem nuvem e sem instalação.</p>
         <div class="cta-row">
@@ -385,6 +386,7 @@
         <div class="phone" id="demoPhone" aria-label="Demonstração interativa do PhoneDeck">
           <div class="ph-status"><span>9:41</span><i></i><span>5G</span></div>
           <div class="ph-head"><b>PhoneDeck</b><small id="demoPage">Media</small></div>
+          <div class="ph-grid" id="demoGrid"></div>
           <div class="ph-now glass" id="demoNow">
             <div class="hd">
               <span class="art" aria-hidden="true">🎵</span>
@@ -392,7 +394,6 @@
             </div>
             <div class="ph-bar"><em style="font-style:normal" id="demoA">1:23</em><span><i id="demoProg"></i></span><em style="font-style:normal" id="demoB">4:28</em></div>
           </div>
-          <div class="ph-grid" id="demoGrid"></div>
           <div class="ph-dots" id="demoDots" role="tablist" aria-label="Páginas">
             <button class="on" role="tab" aria-label="Media"><i></i></button>
             <button role="tab" aria-label="Apps"><i></i></button>
@@ -426,7 +427,7 @@
       <div class="bento">
         <article class="card glass span-4 wide">
           <h3>A tocar, com barra de tempo</h3>
-          <p>Vê o que está a tocar, com a capa ou a miniatura do vídeo, e arrasta a barra para avançar ou recuar. Funciona com Spotify, VLC, o Multimédia do Windows e vídeos no Chrome, Edge, Brave, Opera e Firefox, mesmo com o vídeo noutro separador.</p>
+          <p>Vê o que está a tocar, com a capa ou a miniatura do vídeo, e arrasta a barra para avançar ou recuar. Cada página mostra o que é dela: a do Spotify a música, a do YouTube o vídeo, a da Twitch o direto, a vermelho. Funciona com Spotify, VLC, o Multimédia do Windows e vídeos no Chrome, Edge, Brave, Opera e Firefox.</p>
           <div class="demo">
             <div class="mini-now">
               <b>Como fazer pão em casa</b>
@@ -472,7 +473,7 @@
 
         <article class="card glass span-3">
           <h3>Macros, toque longo e dois toques</h3>
-          <p>Um botão pode fazer várias coisas seguidas, ou outra ação quando o manténs carregado ou tocas duas vezes. Também pode pedir confirmação antes.</p>
+          <p>Um botão pode fazer várias coisas seguidas, ou outra ação quando o manténs carregado ou tocas duas vezes, como abrir uma pasta. Também pode pedir confirmação antes.</p>
           <div class="demo tile-row">
             <div class="key" style="--c:#0f766e"><svg><use href="#i-rec"/></svg>Gravar</div>
             <div class="key" style="--c:#5865f2"><svg><use href="#i-chat"/></svg>Discord</div>
@@ -554,7 +555,7 @@
           <li><svg><use href="#i-check"/></svg><span><b>Páginas prontas</b> para Spotify, YouTube, Twitch, Kick, Discord, OBS, Teams, Zoom e mais.</span></li>
           <li><svg><use href="#i-check"/></svg><span><b>Arrasta para ordenar</b> botões e páginas, e cria subpáginas como pastas.</span></li>
           <li><svg><use href="#i-check"/></svg><span><b>Ícones oficiais automáticos</b>, emojis, animações ou uma imagem tua.</span></li>
-          <li><svg><use href="#i-check"/></svg><span><b>Testa antes de guardar</b>: o botão corre no PC na hora.</span></li>
+          <li><svg><use href="#i-check"/></svg><span><b>Experimenta no editor</b>: a app do telemóvel funciona lá dentro, com pastas, dois toques e manter carregado.</span></li>
           <li><svg><use href="#i-check"/></svg><span><b>Pré-visualização</b> no tamanho real do telemóvel, na vertical e na horizontal.</span></li>
           <li><svg><use href="#i-check"/></svg><span><b>Só abre no próprio PC</b>: do telemóvel só se carrega nos botões.</span></li>
         </ul>
@@ -674,7 +675,7 @@
   <section id="download">
     <div class="wrap">
       <div class="section-head">
-        <span class="eyebrow">Download · v0.2.1</span>
+        <span class="eyebrow">Download · v0.2.2</span>
         <h2>Descarrega o PhoneDeck</h2>
         <p class="lede">Extrai o ficheiro, abre o programa e segue o LEIA-ME que vem dentro. Daqui para a frente, o PhoneDeck avisa-te quando houver uma versão nova.</p>
       </div>
@@ -704,7 +705,7 @@
 <footer>
   <div class="wrap">
     <span class="brand"><img src="icon.svg" alt="" width="22" height="22" style="border-radius:6px">PhoneDeck</span>
-    <span>Versão 0.2.1 · para Windows</span>
+    <span>Versão 0.2.2 · para Windows</span>
     <span>Ícones de marcas: <a href="https://simpleicons.org">Simple Icons</a>. As marcas pertencem aos respetivos donos.</span>
   </div>
 </footer>
@@ -726,7 +727,7 @@
   const hero = document.getElementById('heroDl');
   hero.href = document.querySelector('.dl-card[data-os="win"] .btn').href;
   document.getElementById('heroDlText').textContent = 'Descarregar para Windows';
-  document.getElementById('heroMeta').textContent = 'v0.2.1 · ' + document.getElementById('winMeta').textContent.split('· ')[1] + ' · sem instalação';
+  document.getElementById('heroMeta').textContent = 'v0.2.2 · ' + document.getElementById('winMeta').textContent.split('· ')[1] + ' · sem instalação';
 })();
 
 // ---------- Telemóvel interativo ----------
